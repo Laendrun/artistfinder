@@ -1,2 +1,0 @@
-# artistfinder
-artistfinder - Maxime Collot
