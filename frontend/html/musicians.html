@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+  <html lang="fr">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="author" content="Simon Aeby">
+      <link rel="icon" type="image/x-icon" href="https://www.laendrun.ch/public/favicon.ico">
+      <title>Artistfinder frontend - v0.1.0</title>
+
+      <!-- Bootstrap CDN -->
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+      <!-- Fontawesome -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    </head>
+    <body>
+      <main>
+        <!-- Navbar -->
+        <nav class="navbar sticky-top navbar-expand-sm navbar-dark bg-dark">
+          <a class="navbar-brand" href="/">Artistfinder</a>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle mx-2" type="button" id="searchArtistDropDown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span id="ddtitle_home_language">Je cherche un artiste</span>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="searchArtistDropDown">
+              <a class="dropdown-item" href="/artists/">Voir tous les artistes</a>
+              <a class="dropdown-item" href="/photographs/">Voir les photographes</a>
+              <a class="dropdown-item" href="/musicians/">Voir les musiciens / groupes</a>
+            </div>
+          </div>
+          <a class="nav-item btn btn-primary mx-2" href="/future-events/">Evénements à venir</a>
+        </nav>
+
+        <section>
+          <div class="container">
+            <div id="musicians"></div>
+          </div>
+        </section>
+
+      </main>
+    </body>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <script>
+      $(document).ready(function() {
+        $('.dropdown-toggle').dropdown();
+      });
+
+      fetch(`https://api.eshia.ch/api/v1/artists/type/62faad0d97ecb151a06eef42`)
+      .then(response => 
+        response.json()
+      )
+      .then(data =>{
+          data.forEach(artist => {
+            /*
+            <div class="card">
+              <div class="card-body">
+                This is some text within a card body.
+              </div>
+            </div>
+            */
+            let musiciansDiv = document.getElementById('musicians');
+            let divCard = document.createElement('div');
+            divCard.setAttribute('style', 'width: 18rem;margin:0 auto;');
+            divCard.setAttribute('id', `card_${artist._id}`);
+            divCard.classList.add('card');
+            divCard.classList.add('my-3')
+            let divCardBody = document.createElement('div');
+            let artistName = document.createElement('p');
+            let isGroup = document.createElement('p');
+            artistName.innerHTML = `${artist.name}`;
+            if (artist.isGroup) {
+              isGroup.innerHTML = `Groupe <span class='text-success'><i class='fa-solid fa-check'></i></span>`;
+            } else {  
+              isGroup.innerHTML = `Groupe <span class='text-danger'><i class='fa-solid fa-xmark'></i></span>`;
+            }
+            divCardBody.classList.add('card-body');
+            divCard.append(divCardBody);
+            divCardBody.append(artistName);
+            divCardBody.append(isGroup);
+            musiciansDiv.append(divCard);
+          
+          });
+
+        } 
+      );
+    </script>
+
+    <footer>
+
+    </footer>
+  </html>
+  
