@@ -1,3 +1,22 @@
+/* Routes to "protect" :
+* Basically, for the reservations, only the system will be able to post new reservations, before saving them, it has to be
+* accepted by both parties (place + artist). If one of both doesn't accept the reservation, the reservation will not be 
+* published.
+* PUT /api/v1/reservations/:id
+* To update a reservation, it will work like inserting a new one, only the system will be able to do it and updates to the 
+* reservations have to be accepted by both parties.
+* - admins can update any reservations
+* POST /api/v1/types
+* To insert new reservation, it will be done as said before, only the system will be able to do it and it has to be
+* accepted by both parties
+* - admins can insert new reservations manually
+* DELETE /api/v1/types/:id
+* To delete a reservation, only the system will be able to do it as well. 
+* The cancellation of the event has not to be accepted by both parties but when one of the parties cancels, it has to leave
+* a message explaining why it was cancelled
+* - admins can cancel any reservation they want if they need to.
+*/
+
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');

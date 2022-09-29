@@ -1,3 +1,11 @@
+/* Routes to "protect" :
+* PUT /api/v1/styles/:id
+* - only an admin can update a style
+* POST /api/v1/styles
+* - only an admin can insert a new style
+* DELETE /api/v1/styles/:id
+* - only an admin can delete a style
+*/
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');

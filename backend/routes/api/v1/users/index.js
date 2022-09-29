@@ -1,3 +1,12 @@
+/* Routes to "protect" :
+* PUT /api/v1/user/:id
+* - a user can only update itself
+* - admins can update any user (but can't see the actual data of the user)
+* DELETE /api/v1/user/:id
+* - a user can only delete itself
+* - admins can delete any user
+*/
+
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');

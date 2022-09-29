@@ -1,3 +1,5 @@
+// Don't forget to get the JWT secret from the env variable
+
 const express = require('express');
 const jwt_decode = require('jwt-decode');
 const sign = require('jwt-encode');

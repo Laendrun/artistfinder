@@ -1,3 +1,10 @@
+/* Routes to "protect" :
+* PUT /api/v1/types/:id
+* - a user can only update a review he made
+* DELETE /api/v1/types/:id
+* - a user can only delete a review he made
+* - admins can delete any review they want
+*/
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');

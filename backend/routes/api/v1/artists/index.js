@@ -1,3 +1,16 @@
+/* Routes to "protect" :
+* PUT /api/v1/artists/:id
+* - only the user who created the artist can update it
+* - admins can update any artist
+* POST /api/v1/artists
+* - only a connected user can create an artist
+*   - before publishing, artists have to be validated by an admin / moderator
+* - admins can insert new artists
+* DELETE /api/v1/artists/:id
+* - only the user who created the artist can delete it.
+* - admins can delete any artists
+*/
+
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
