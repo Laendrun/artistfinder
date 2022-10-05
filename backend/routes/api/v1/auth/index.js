@@ -1,8 +1,7 @@
 // Don't forget to get the JWT secret from the env variable
 
 const express = require('express');
-const jwt_decode = require('jwt-decode');
-const sign = require('jwt-encode');
+const jwt = require('jsonwebtoken');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { signupSchema } = require('../../../lib/validation.js');
@@ -12,8 +11,8 @@ const router = express.Router();
 
 router.post('/google/', (req, res, next) => {
 
-  const token = req.body.token;
-  const decoded = jwt_decode(token);
+  const google_token = req.body.token;
+  const decoded = jwt.decode(google_token);
 
   const user_email = decoded.email;
   const user_fname = decoded.given_name;
@@ -31,7 +30,7 @@ router.post('/google/', (req, res, next) => {
       connection.promise().query('INSERT INTO `Users` (user_id, user_fname, user_lname, user_email, type_id, role_id, user_login_type) '+values)
       .then(([rows, fields]) => {
 
-        const secret = '8qBmQ3J0Wn4Hw6ooHeZsHv6qON2m4f20olRY';
+        const secret = process.env.JWT_SECRET;
         const data = {
           user_id: rows.insertId,
           user_fname: user_fname,
@@ -40,15 +39,14 @@ router.post('/google/', (req, res, next) => {
           role_id: role_id
         }
 
-        const jwt = sign(data, secret);
-        res.json(jwt);
+        const token = jwt.sign(data, secret);
+        res.json(token);
       })
-      .catch(console.log())
-      .then( () => connection.end());
+      .catch(console.log());
     } else {
       connection.promise().query('SELECT * FROM `Users` WHERE user_email = "'+user_email+'" AND user_login_type = "'+user_login_type+'"')
       .then(([rows, fields]) => {
-        const secret = '8qBmQ3J0Wn4Hw6ooHeZsHv6qON2m4f20olRY'
+        const secret = process.env.JWT_SECRET;
 
         const data = {
           user_id: rows[0].user_id,
@@ -58,11 +56,10 @@ router.post('/google/', (req, res, next) => {
           role_id: rows[0].role_id
         }
 
-        const jwt = sign(data, secret);
-        res.json(jwt);
+        const token = jwt.sign(data, secret);
+        res.json(token);
       })
-      .catch(console.log())
-      .then( () => connection.end());
+      .catch(console.log());
     }
 
   })

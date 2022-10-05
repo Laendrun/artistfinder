@@ -4,6 +4,13 @@ function validationError(error, res, next) {
   next(err);
 }
 
+function unauthorized(res, next) {
+  res.status(401);
+  const err = new Error('🚫 Unauthorized 🚫');
+  next(err);
+}
+
 module.exports = {
   validationError,
+  unauthorized,
 }

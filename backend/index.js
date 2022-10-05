@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 const path = require('path');
 
+const { checkTokenSetUser } = require('./routes/middlewares/checkTokenSetUser.js');
+
 // /API router
 const api = require('./routes/api');
 
@@ -12,6 +14,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
+//app.use(checkTokenSetUser);
 app.use('/public', express.static(__dirname + '/public'));
 
 app.use('/api/', api);
