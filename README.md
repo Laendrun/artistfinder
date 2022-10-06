@@ -15,14 +15,14 @@ Artistfinder - Maxime Collot
 - [x] Update validations schema to accept the same field names as they are saved in the database
 - [ ] Update SQL requests to get the correct values from the body of the request...
   - [x] artists routes
-  - [ ] auth routes
-  - [ ] categories routes
-  - [ ] places routes
-  - [ ] reservations routes
-  - [ ] reviews routes
-  - [ ] styles routes
-  - [ ] types routes
-  - [ ] users routes
+  - [x] auth routes
+  - [x] categories routes
+  - [x] places routes
+  - [x] reservations routes
+  - [x] reviews routes
+  - [x] styles routes
+  - [x] types routes
+  - [x] users routes
 
 ## Authorization errors
 
@@ -39,24 +39,30 @@ Create a route for all the roles related endpoints
 - [ ] GET api/v1/roles/:id
   - [ ] returns all informations about the role specified with :id
 - [ ] PUT api/v1/roles/:id
-  - [ ] 
+  - [ ] update a role in the db
 
 ## Artists route
 
-- [ ] PUT /api/v1/artists/:id
- - [ ] only the user who created the artist can update it
- - [ ] admins can update any artist
+Secure these routes :
+
+- [x] PUT /api/v1/artists/:id
+ - [x] only the user who created the artist can update it
+ - [x] admins can update any artist
 - [x] POST /api/v1/artists/
   - [x] only a connected user can create an artist
 - [x] DELETE /api/v1/artists/:id
   - [x] only the user who created the artist can delete it.
   - [x] admins can delete any artists
 
+Think about this :
+
 - [ ] before publishing, artists have to be validated by an admin / moderator
 - [ ] Modify the Artists route to add a way for admin and moderator to approve artists.
 - [ ] Modify the database to add a field _artist.verified_ -> default to 0.
 
 ## Categories route
+
+Secure these routes :
 
 - [x] PUT /api/v1/categories/:id
   - [x] only admin can update a category
@@ -67,16 +73,20 @@ Create a route for all the roles related endpoints
 
 ## Places route
 
-- [ ] PUT /api/v1/places/:id
-  - [ ] only the owner can update it.
-  - [ ] admins can update any places.
-- [ ] POST /api/v1/places
-  - [ ] only a connected user can create a new place
-- [ ] DELETE /api/v1/places/:id
-  - [ ] only the owner can delete the place.
-  - [ ] admins can delete any places.
+Secure these routes :
+
+- [x] PUT /api/v1/places/:id
+  - [x] only the owner can update it.
+  - [x] admins can update any places.
+- [x] POST /api/v1/places
+  - [x] only a connected user can create a new place
+- [x] DELETE /api/v1/places/:id
+  - [x] only the owner can delete the place.
+  - [x] admins can delete any places.
 
 ## Reservations route
+
+Think about all of these :
 
  Basically, for the reservations, only the system will be able to post new reservations, before saving them, it has to be
  accepted by both parties (place + artist). If one of both doesn't accept the reservation, the reservation will not be 

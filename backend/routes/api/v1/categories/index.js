@@ -59,7 +59,7 @@ router.post('/', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = categorySchema.validate(req.body);
   if (error === undefined) {
     const connection = createDBConnection();
-    const values = `VALUES (NULL, "${req.body.name}")`;
+    const values = `VALUES (NULL, "${req.body.category_name}")`;
     connection.promise().query('INSERT INTO `Categories` '+ values)
     .then(([rows, fields]) => {
       res.json(rows);
@@ -77,7 +77,7 @@ router.put('/:id', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('UPDATE `Categories` SET category_name = "'+ req.body.name +'" WHERE category_id = "'+ req.params.id +'"')
+    connection.promise().query('UPDATE `Categories` SET category_name = "'+ req.body.category_name +'" WHERE category_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
       res.json(rows);
     })

@@ -4,6 +4,9 @@ const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, nameSchema, placeSchema, citySchema, post_codeSchema, capacitySchema } = require('../../../lib/validation.js');
 const { validationError } = require('../../../lib/utils.js');
 
+const { isLoggedIn } = require('../../../middlewares/isLoggedIn.js');
+const { isOwnerOrAdmin } = require('../../../middlewares/isOwnerOrAdmin.js');
+
 const router = express.Router();
 
 // GET routes
@@ -132,11 +135,11 @@ router.get('/capacity/is/:capacity', (req, res, next) => {
 
 // POST routes
 // INSERT a new place
-router.post('/', (req, res, next) => {
+router.post('/', isLoggedIn, (req, res, next) => {
   const { error } = placeSchema.validate(req.body);
   if ( error === undefined ) {
     const connection = createDBConnection();
-    let values = `VALUES (NULL, "${req.body.name}", "${req.body.capacity}", "${req.body.address}", "${req.body.post_code}", "${req.body.city}")`;
+    let values = `VALUES (NULL, "${req.body.place_name}", "${req.body.place_capacity}", "${req.body.place_address}", "${req.body.place_postCode}", "${req.body.place_city}")`;
     connection.promise().query('INSERT INTO `Places` (`place_id`, `place_name`, `place_capacity`, `place_address`, `place_postCode`, `place_city`) '+values)
     .then(([rows, fields]) => {
       res.json(rows);
@@ -150,13 +153,13 @@ router.post('/', (req, res, next) => {
 
 // PUT routes
 // UPDATE place with id = :id
-router.put('/:id', (req, res, next) => {
+router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const { error } = placeSchema.validate(req.body);
     if ( error === undefined ) {
       const connection = createDBConnection();
-      connection.promise().query('UPDATE `Places` SET place_name = "'+ req.body.name +'", place_capacity = "'+ req.body.capacity +'", place_address = "'+ req.body.address +'", place_postCode = "'+ req.body.post_code +'", place_city = "'+ req.body.city +'" WHERE place_id = "'+ req.params.id +'"')
+      connection.promise().query('UPDATE `Places` SET place_name = "'+ req.body.place_name +'", place_capacity = "'+ req.body.place_capacity +'", place_address = "'+ req.body.palce_address +'", place_postCode = "'+ req.body.place_postCode +'", place_city = "'+ req.body.place_city +'" WHERE place_id = "'+ req.params.id +'"')
       .then(([rows, fields]) => {
         res.json(rows);
       })
@@ -172,7 +175,7 @@ router.put('/:id', (req, res, next) => {
 
 // DELETE routes
 // DELETE place with id = :id
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
