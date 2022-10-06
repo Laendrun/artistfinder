@@ -15,6 +15,8 @@ const express = require('express');
 
 const { isLoggedIn } = require('../../../middlewares/isLoggedIn.js');
 const { isOwner } = require('../../../middlewares/isOwner.js');
+const { isOwnerOrAdmin } = require('../../../middlewares/isOwnerOrAdmin.js');
+const { isAdmin } = require('../../../middlewares/isAdmin.js');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, nameSchema, artistSchema } = require('../../../lib/validation.js');
@@ -147,7 +149,7 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 // PUT routes
 // UPDATE artist with id = :id
-router.put('/:id', isLoggedIn, isOwner, (req, res, next) => {
+router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
 
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined) {

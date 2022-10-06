@@ -56,12 +56,12 @@ Create a route for all the roles related endpoints
   - [x] Check if _user_ property exists on the request
 - [x] isOwner middleware
   - [x] check if the resource requested was created by the user who makes the request
-- [ ] isOwnerOrAdmin middleware
-  - [ ] check if the resource requested was created by the user who makes the request or
-  - [ ] that the user is an _admin_
-- [ ] isAdmin middleware
-  - [ ] must happen after isLoggedIn middleware
-  - [ ] check if _user.role_ is Admin
+- [x] isOwnerOrAdmin middleware
+  - [x] check if the resource requested was created by the user who makes the request or
+  - [x] that the user is an _admin_
+- [x] isAdmin middleware
+  - [x] must happen after isLoggedIn middleware
+  - [x] check if _user.role_ is Admin
 
 # To-Do - Frontend
 
