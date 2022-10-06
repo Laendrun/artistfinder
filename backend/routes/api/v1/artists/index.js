@@ -13,6 +13,8 @@
 
 const express = require('express');
 
+const { isLoggedIn } = require('../../../middlewares/isLoggedIn.js');
+
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, nameSchema, artistSchema } = require('../../../lib/validation.js');
 const { validationError } = require('../../../lib/utils.js');
@@ -66,7 +68,7 @@ router.get('/type/:type_id', (req, res, next) => {
     .catch(console.log())
     .then( () => connection.end());
   } else {
-    validationError(error, res, next);
+    validationError(res, next);
   }
 });
 
@@ -83,7 +85,7 @@ router.get('/type/name/:name', (req, res, next) => {
     .catch(console.log())
     .then( () => connection.end());
   } else {
-    validationError(error, res, next);
+    validationError(res, next);
   }
 });
 
@@ -99,7 +101,7 @@ router.get('/:id', (req, res, next) => {
     .catch(console.log())
     .then( () => connection.end());
   } else {
-    validationError(error, res, next);
+    validationError(res, next);
   }
 });
 
@@ -116,7 +118,7 @@ router.get('/name/:name', (req, res, next) => {
     .catch(console.log())
     .then( () => connection.end());
   } else {
-    validationError(error, res, next);
+    validationError(res, next);
   }
 });
 
@@ -128,7 +130,7 @@ router.post('/', (req, res, next) => {
 
   if ( error === undefined ) {
     connection = createDBConnection();
-    let values = `VALUES (NULL, "${req.body.name}", "${req.body.isGroup}", "${req.body.type}", "${req.body.style}")`;
+    let values = `VALUES (NULL, "${req.body.artist_name}", "${req.body.artist_isGroup}", "${req.body.type_id}", "${req.body.style_id}")`;
     req.body.isGroup = req.body.isGroup ? 1 : 0;
     connection.promise().query('INSERT INTO `Artists` (`artist_id`, `artist_name`, `artist_isGroup`, `type_id`, `style_id`) '+values)
     .then(([rows, fields]) => {
@@ -137,14 +139,14 @@ router.post('/', (req, res, next) => {
     .catch(console.log())
     .then( () => connection.end());
   } else {
-    validationError(error, res, next);
+    validationError(res, next);
   }
 
 });
 
 // PUT routes
 // UPDATE artist with id = :id
-router.put('/:id', (req, res, next) => {
+router.put('/:id', isLoggedIn, (req, res, next) => {
 
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined) {
@@ -153,18 +155,18 @@ router.put('/:id', (req, res, next) => {
     if ( error === undefined ) {
       connection = createDBConnection();
       req.body.isGroup = req.body.isGroup ? 1 : 0;
-      connection.promise().query('UPDATE `Artists` SET artist_name = "'+ req.body.name +'", artist_isGroup = "'+ req.body.isGroup +'", type_id = "'+ req.body.type +'", style_id = "'+ req.body.style +'" WHERE artist_id = "'+ req.params.id+'"')
+      connection.promise().query('UPDATE `Artists` SET artist_name = "'+ req.body.artist_name +'", artist_isGroup = "'+ req.body.artist_isGroup +'", type_id = "'+ req.body.type_id +'", style_id = "'+ req.body.style_id +'" WHERE artist_id = "'+ req.params.id+'"')
       .then(([rows, fields]) => {
         res.json(rows)
       })
       .catch(console.log())
       .then( () => connection.end());
     } else {
-      validationError(error, res, next);
+      validationError(res, next);
     }
 
   } else {
-    validationError(error, res, next);
+    validationError(res, next);
   }
 
 });
@@ -183,7 +185,7 @@ router.delete('/:id', (req, res, next) => {
     .catch(console.log())
     .then( () => connection.end());
   } else {
-    validationError(error, res, next);
+    validationError(res, next);
   }
 });
 

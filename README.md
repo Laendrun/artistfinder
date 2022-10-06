@@ -3,10 +3,16 @@ Artistfinder - Maxime Collot
 
 # To-Do - Backend
 
-- [ ] User middleware
-  - [ ] Verify JWT origin
-  - [ ] Decode JWT
-  - [ ] Set a _user_ property on the request with informations from the JWT
+- [x] Update validations schema to accept the same field names as they are saved in the database
+- [ ] Update SQL requests to get the correct values from the body of the request...
+
+- [ ] Check the validationError function 
+  - it gives me a _res.status is not a function_ so yeah not good
+
+- [x] User middleware
+  - [x] Verify JWT origin
+  - [x] Decode JWT
+  - [x] Set a _user_ property on the request with informations from the JWT
 - [ ] isLoggedIn middleware
   - [ ] Check if _user_ property exists on the request
 - [ ] isAdmin middleware
