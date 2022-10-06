@@ -14,6 +14,7 @@
 const express = require('express');
 
 const { isLoggedIn } = require('../../../middlewares/isLoggedIn.js');
+const { isOwner } = require('../../../middlewares/isOwner.js');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, nameSchema, artistSchema } = require('../../../lib/validation.js');
@@ -68,7 +69,7 @@ router.get('/type/:type_id', (req, res, next) => {
     .catch(console.log())
     .then( () => connection.end());
   } else {
-    validationError(res, next);
+    validationError(error, res, next);
   }
 });
 
@@ -85,7 +86,7 @@ router.get('/type/name/:name', (req, res, next) => {
     .catch(console.log())
     .then( () => connection.end());
   } else {
-    validationError(res, next);
+    validationError(error, res, next);
   }
 });
 
@@ -101,7 +102,7 @@ router.get('/:id', (req, res, next) => {
     .catch(console.log())
     .then( () => connection.end());
   } else {
-    validationError(res, next);
+    validationError(error, res, next);
   }
 });
 
@@ -118,13 +119,13 @@ router.get('/name/:name', (req, res, next) => {
     .catch(console.log())
     .then( () => connection.end());
   } else {
-    validationError(res, next);
+    validationError(error, res, next);
   }
 });
 
 // POST routes
 // POST new artist
-router.post('/', (req, res, next) => {
+router.post('/', isLoggedIn, (req, res, next) => {
 
   const { error } = artistSchema.validate(req.body);
 
@@ -139,14 +140,14 @@ router.post('/', (req, res, next) => {
     .catch(console.log())
     .then( () => connection.end());
   } else {
-    validationError(res, next);
+    validationError(error, res, next);
   }
 
 });
 
 // PUT routes
 // UPDATE artist with id = :id
-router.put('/:id', isLoggedIn, (req, res, next) => {
+router.put('/:id', isLoggedIn, isOwner, (req, res, next) => {
 
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined) {
@@ -162,18 +163,18 @@ router.put('/:id', isLoggedIn, (req, res, next) => {
       .catch(console.log())
       .then( () => connection.end());
     } else {
-      validationError(res, next);
+      validationError(error, res, next);
     }
 
   } else {
-    validationError(res, next);
+    validationError(error, res, next);
   }
 
 });
 
 // DELETE routes
 // DELETE artist with id = :id
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', isLoggedIn, (req, res, next) => {
 
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
@@ -185,7 +186,7 @@ router.delete('/:id', (req, res, next) => {
     .catch(console.log())
     .then( () => connection.end());
   } else {
-    validationError(res, next);
+    validationError(error, res, next);
   }
 });
 

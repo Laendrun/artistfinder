@@ -1,7 +1,7 @@
 const { unauthorized } = require("../lib/utils");
 
-function isLoggedIn(req, res, next) {
-  if (req.user) {
+function isOwner(req, res, next) {
+  if (req.user.artist_id == req.params.id) {
     next();
   } else {
     unauthorized(res, next);
@@ -9,5 +9,5 @@ function isLoggedIn(req, res, next) {
 }
 
 module.exports = {
-  isLoggedIn,
+  isOwner,
 }

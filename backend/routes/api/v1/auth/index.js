@@ -52,6 +52,7 @@ router.post('/google/', (req, res, next) => {
           user_id: rows[0].user_id,
           user_fname: rows[0].user_fname,
           user_lname: rows[0].user_lname,
+          artist_id: rows[0].artist_id,
           type_id: rows[0].type_id,
           role_id: rows[0].role_id
         }
