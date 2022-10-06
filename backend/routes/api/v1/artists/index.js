@@ -1,16 +1,3 @@
-/* Routes to "protect" :
-* PUT /api/v1/artists/:id
-* - only the user who created the artist can update it
-* - admins can update any artist
-* POST /api/v1/artists
-* - only a connected user can create an artist
-*   - before publishing, artists have to be validated by an admin / moderator
-* - admins can insert new artists
-* DELETE /api/v1/artists/:id
-* - only the user who created the artist can delete it.
-* - admins can delete any artists
-*/
-
 const express = require('express');
 
 const { isLoggedIn } = require('../../../middlewares/isLoggedIn.js');
@@ -176,7 +163,7 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
 
 // DELETE routes
 // DELETE artist with id = :id
-router.delete('/:id', isLoggedIn, (req, res, next) => {
+router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
 
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {

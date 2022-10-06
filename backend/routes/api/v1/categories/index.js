@@ -1,17 +1,11 @@
-/* Routes to "protect" :
-* PUT /api/v1/categories/:id
-* - only an admin can update a style
-* POST /api/v1/categories
-* - only an admin can insert a new category
-* DELETE /api/v1/categories/:id
-* - only an admin can delete a category
-*/
-
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, nameSchema, categorySchema } = require('../../../lib/validation.js');
 const { validationError } = require('../../../lib/utils.js');
+
+const { isLoggedIn } = require('../../../middlewares/isLoggedIn.js');
+const { isAdmin } = require('../../../middlewares/isAdmin.js');
 
 const router = express.Router();
 
@@ -61,7 +55,7 @@ router.get('/name/:name', (req, res, next) => {
 
 // POST routes
 // POST new category
-router.post('/', (req, res, next) => {
+router.post('/', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = categorySchema.validate(req.body);
   if (error === undefined) {
     const connection = createDBConnection();
@@ -79,7 +73,7 @@ router.post('/', (req, res, next) => {
 
 // PUT routes
 // UPDATE category WHERE category_id = :id
-router.put('/:id', (req, res, next) => {
+router.put('/:id', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
@@ -96,7 +90,7 @@ router.put('/:id', (req, res, next) => {
 
 // DELETE routes
 // DELETE category WHERE category_id = :id
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();

@@ -1,14 +1,3 @@
-/* Routes to "protect" :
-* PUT /api/v1/places/:id
-* - only the user who created the place can update it.
-* - admins can update any places.
-* POST /api/v1/places
-* - only a connected user can create a new place.
-* - admins can create new places 
-* DELETE /api/v1/styles/:id
-* - only the user who created the place can delete it.
-* - an admin can delete any places.
-*/
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');

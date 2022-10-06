@@ -43,8 +43,58 @@ Create a route for all the roles related endpoints
 
 ## Artists route
 
+- [ ] PUT /api/v1/artists/:id
+ - [ ] only the user who created the artist can update it
+ - [ ] admins can update any artist
+- [x] POST /api/v1/artists/
+  - [x] only a connected user can create an artist
+- [x] DELETE /api/v1/artists/:id
+  - [x] only the user who created the artist can delete it.
+  - [x] admins can delete any artists
+
+- [ ] before publishing, artists have to be validated by an admin / moderator
 - [ ] Modify the Artists route to add a way for admin and moderator to approve artists.
 - [ ] Modify the database to add a field _artist.verified_ -> default to 0.
+
+## Categories route
+
+- [x] PUT /api/v1/categories/:id
+  - [x] only admin can update a category
+- [x] POST /api/v1/categories/
+  - [x] only an admin can insert a new category
+- [x] DELETE /api/v1/categories/:id
+  - [x] only an admin can delete a category
+
+## Places route
+
+- [ ] PUT /api/v1/places/:id
+  - [ ] only the owner can update it.
+  - [ ] admins can update any places.
+- [ ] POST /api/v1/places
+  - [ ] only a connected user can create a new place
+- [ ] DELETE /api/v1/places/:id
+  - [ ] only the owner can delete the place.
+  - [ ] admins can delete any places.
+
+## Reservations route
+
+ Basically, for the reservations, only the system will be able to post new reservations, before saving them, it has to be
+ accepted by both parties (place + artist). If one of both doesn't accept the reservation, the reservation will not be 
+ published.
+ PUT /api/v1/reservations/:id
+ To update a reservation, it will work like inserting a new one, only the system will be able to do it and updates to the 
+ reservations have to be accepted by both parties.
+ - admins can update any reservations
+ POST /api/v1/types
+ To insert new reservation, it will be done as said before, only the system will be able to do it and it has to be
+ accepted by both parties
+ - admins can insert new reservations manually
+ DELETE /api/v1/types/:id
+ To delete a reservation, only the system will be able to do it as well. 
+ The cancellation of the event has not to be accepted by both parties but when one of the parties cancels, it has to leave
+ a message explaining why it was cancelled
+ - admins can cancel any reservation they want if they need to.
+
 
 ## Middlewares
 
