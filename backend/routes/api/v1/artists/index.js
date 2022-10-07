@@ -4,7 +4,7 @@ const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, nameSchema, artistSchema } = require('../../../lib/validation.js');
 const { validationError } = require('../../../lib/utils.js');
 
-const { isLoggedIn, isOwnerOrAdmin } = require('../../../middlewares/');
+const { isLoggedIn, isOwnerOrAdmin, isAdmin } = require('../../../middlewares/');
 
 const router = express.Router();
 
@@ -151,11 +151,41 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     } else {
       validationError(error, res, next);
     }
-
   } else {
     validationError(error, res, next);
   }
+});
 
+// set artist as verified
+router.put('/:id/verify', isLoggedIn, isAdmin, (req, res, next) => {
+  const { error } = idSchema.validate({id: req.params.id});
+  if (error === undefined) {
+    connection = createDBConnection();
+    connection.promise().query('UPDATE `Artists` SET artist_validated = "1" WHERE artist_id = "'+ req.params.id+'"')
+    .then(([rows, fields]) => {
+      res.json(rows)
+    })
+    .catch(console.error)
+    .then( () => connection.end());
+  } else {
+    validationError(error, res, next);
+  }
+});
+
+// set artist as not verified
+router.put('/:id/unverify', isLoggedIn, isAdmin, (req, res, next) => {
+  const { error } = idSchema.validate({id: req.params.id});
+  if (error === undefined) {
+    connection = createDBConnection();
+    connection.promise().query('UPDATE `Artists` SET artist_validated = "0" WHERE artist_id = "'+ req.params.id+'"')
+    .then(([rows, fields]) => {
+      res.json(rows)
+    })
+    .catch(console.error)
+    .then( () => connection.end());
+  } else {
+    validationError(error, res, next);
+  }
 });
 
 // DELETE routes
