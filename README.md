@@ -5,8 +5,6 @@ Artistfinder
 
 # To-Do - Backend
 
-- [ ] Move all middlewares in the same file so that makes only one path to require in all files
-
 ## User with multiple roles
 
 - [ ] Find a way to add multiple roles to a user.
@@ -24,14 +22,7 @@ Some errors could be more descriptive.
 
 ## Roles route
 
-Create a route for all the roles related endpoints
-
-- [ ] GET api/v1/roles/
-  - [ ] returns a list of all roles
-- [ ] GET api/v1/roles/:id
-  - [ ] returns all informations about the role specified with :id
-- [ ] PUT api/v1/roles/:id
-  - [ ] update a role in the db
+[x] Create a route for all the roles related endpoints
 
 ## Artists route
 
@@ -106,6 +97,8 @@ Secure routes [ ] (partially done needs some work on other routes to finish it)
 
 - [ ] Add a SOFT_DELETED field to user
 - [ ] Add a BLOCKED field to user
+- [ ] Add a VALIDATED field to artists
+- [ ] Add a VALIDATED field to places
 
 # To-Do - Frontend
 

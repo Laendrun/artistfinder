@@ -50,6 +50,11 @@ const typeSchema = Joi.object({
   type_name: Joi.string().min(2).max(25).required()
 });
 
+// role validation schema
+const roleSchema = Joi.object({
+  role_name: Joi.string().min(2).max(25).required(),
+});
+
 // user validation schema
 const userSchema = Joi.object({
   user_fname: Joi.string().min(2).max(64).required(),
@@ -114,4 +119,5 @@ module.exports = {
   typeSchema,
   userSchema,
   signupSchema,
+  roleSchema,
 }
