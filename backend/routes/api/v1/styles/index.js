@@ -5,7 +5,7 @@ const { idSchema, styleSchema } = require('../../../lib/validation.js');
 const { validationError } = require('../../../lib/utils.js');
 
 const { isLoggedIn } = require('../../../middlewares/isLoggedIn.js');
-const { isAdmin } = require('../../middlewares/isAdmin.js');
+const { isAdmin } = require('../../../middlewares/isAdmin.js');
 
 const router = express.Router();
 

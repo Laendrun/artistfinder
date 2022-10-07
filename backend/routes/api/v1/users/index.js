@@ -5,8 +5,9 @@ const { idSchema, userSchema } = require('../../../lib/validation.js');
 const { validationError } = require('../../../lib/utils.js');
 
 const { isLoggedIn } = require('../../../middlewares/isLoggedIn.js');
-const { isOwner } = require('../../middlewares/isOwner');
-const { isOwnerOrAdmin } = require('../../middlewares/isOwnerOrAdmin.js');
+const { isAdmin } = require('../../../middlewares/isAdmin.js');
+const { isOwner } = require('../../../middlewares/isOwner');
+const { isOwnerOrAdmin } = require('../../../middlewares/isOwnerOrAdmin.js');
 
 const router = express.Router();
 

@@ -54,6 +54,7 @@ const typeSchema = Joi.object({
 const userSchema = Joi.object({
   user_fname: Joi.string().min(2).max(64).required(),
   user_lname: Joi.string().min(2).max(64).required(),
+  user_username: Joi.string().min(2).max(64).required(),
   user_email: Joi.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).required(),
   type_id: Joi.number().required(),
   role_id: Joi.number().required()

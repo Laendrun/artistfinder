@@ -17,6 +17,7 @@ router.post('/google/', (req, res, next) => {
   const user_email = decoded.email;
   const user_fname = decoded.given_name;
   const user_lname = decoded.family_name; 
+  const user_username = decoded.given_name + ' ' + decoded.family_name;
   const type_id = 3;
   const role_id = 10;
   const user_login_type = 1
@@ -26,8 +27,8 @@ router.post('/google/', (req, res, next) => {
   .then(([rows, fields]) => {
 
     if (rows.length == 0) {
-      const values = `VALUES (NULL, "${user_fname}", "${user_lname}", "${user_email}", "${type_id}", "${role_id}", "${user_login_type}")`;
-      connection.promise().query('INSERT INTO `Users` (user_id, user_fname, user_lname, user_email, type_id, role_id, user_login_type) '+values)
+      const values = `VALUES (NULL, "${user_fname}", "${user_lname}", "${user_username}", "${user_email}", "${type_id}", "${role_id}", "${user_login_type}")`;
+      connection.promise().query('INSERT INTO `Users` (user_id, user_fname, user_lname, user_username, user_email, type_id, role_id, user_login_type) '+values)
       .then(([rows, fields]) => {
 
         const secret = process.env.JWT_SECRET;
@@ -35,6 +36,7 @@ router.post('/google/', (req, res, next) => {
           user_id: rows.insertId,
           user_fname: user_fname,
           user_lname: user_lname,
+          user_username: user_username,
           type_id: type_id, 
           role_id: role_id
         }

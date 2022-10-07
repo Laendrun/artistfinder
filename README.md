@@ -5,8 +5,6 @@ Artistfinder
 
 # To-Do - Backend
 
-- [ ] /!\ Update validation schema for a user to accomodate the username (yep I forgot it)
-- [ ] /!\ Update the token generation from the auth route to accomodate the username...
 - [ ] Move all middlewares in the same file so that makes only one path to require in all files
 
 ## User with multiple roles
@@ -93,6 +91,8 @@ Secure routes [ ] (partially done needs some work on other routes to finish it)
 - [ ] Add a SOFT_DELETE route for the user
   - [ ] only the owner or admin can soft_delete a user
 - [ ] admins can reset informations of any users (they will only see the username and have access to reset password, email, etc)
+- [ ] Add a route to change connection type (google -> email)
+  - [ ] Only owner or admin can change this
 
 ## Middlewares
 
