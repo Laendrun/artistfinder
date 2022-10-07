@@ -31,8 +31,9 @@ Secure routes [x]
 Think about this :
 
 - [ ] before publishing, artists have to be validated by an admin / moderator
+  - -> see To-Do Database section
+
 - [ ] Modify the Artists route to add a way for admin and moderator to approve artists.
-- [ ] Modify the database to add a field _artist.verified_ -> default to 0.
 
 ## Categories route
 
@@ -95,10 +96,10 @@ Secure routes [ ] (partially done needs some work on other routes to finish it)
 
 # To-Do - Database
 
-- [ ] Add a SOFT_DELETED field to user
-- [ ] Add a BLOCKED field to user
-- [ ] Add a VALIDATED field to artists
-- [ ] Add a VALIDATED field to places
+- [x] Add a SOFT_DELETED field to user -> defaults to 0/false
+- [x] Add a BLOCKED field to user -> defaults to 0/false
+- [x] Add a VALIDATED field to artists -> defaults to 0/false
+- [x] Add a VALIDATED field to places -> defaults to 0/false
 
 # To-Do - Frontend
 
