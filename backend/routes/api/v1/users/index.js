@@ -4,10 +4,7 @@ const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, userSchema } = require('../../../lib/validation.js');
 const { validationError } = require('../../../lib/utils.js');
 
-const { isLoggedIn } = require('../../../middlewares/isLoggedIn.js');
-const { isAdmin } = require('../../../middlewares/isAdmin.js');
-const { isOwner } = require('../../../middlewares/isOwner');
-const { isOwnerOrAdmin } = require('../../../middlewares/isOwnerOrAdmin.js');
+const { isLoggedIn, isAdmin, isOwner, isOwnerOrAdmin } = require('../../../middlewares/');
 
 const router = express.Router();
 
