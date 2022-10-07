@@ -1,7 +1,13 @@
 # Artistfinder
-Artistfinder - Maxime Collot
+Artistfinder
+
+(Everything step that will be completed will be removed from the list to keep it clear.)
 
 # To-Do - Backend
+
+- [ ] /!\ Update validation schema for a user to accomodate the username (yep I forgot it)
+- [ ] /!\ Update the token generation from the auth route to accomodate the username...
+- [ ] Move all middlewares in the same file so that makes only one path to require in all files
 
 ## User with multiple roles
 
@@ -10,19 +16,7 @@ Artistfinder - Maxime Collot
   - \["user", "moderator"\]
   - Then I can have a function that checks role(s) based on that array.
 
-## Validation schemas && SQL requests
-
-- [x] Update validations schema to accept the same field names as they are saved in the database
-- [ ] Update SQL requests to get the correct values from the body of the request...
-  - [x] artists routes
-  - [x] auth routes
-  - [x] categories routes
-  - [x] places routes
-  - [x] reservations routes
-  - [x] reviews routes
-  - [x] styles routes
-  - [x] types routes
-  - [x] users routes
+## Validation schemas && SQL requestsm [x]
 
 ## Authorization errors
 
@@ -43,16 +37,7 @@ Create a route for all the roles related endpoints
 
 ## Artists route
 
-Secure these routes :
-
-- [x] PUT /api/v1/artists/:id
- - [x] only the user who created the artist can update it
- - [x] admins can update any artist
-- [x] POST /api/v1/artists/
-  - [x] only a connected user can create an artist
-- [x] DELETE /api/v1/artists/:id
-  - [x] only the user who created the artist can delete it.
-  - [x] admins can delete any artists
+Secure routes [x]
 
 Think about this :
 
@@ -62,27 +47,11 @@ Think about this :
 
 ## Categories route
 
-Secure these routes :
-
-- [x] PUT /api/v1/categories/:id
-  - [x] only admin can update a category
-- [x] POST /api/v1/categories/
-  - [x] only an admin can insert a new category
-- [x] DELETE /api/v1/categories/:id
-  - [x] only an admin can delete a category
+Secure routes [x]
 
 ## Places route
 
-Secure these routes :
-
-- [x] PUT /api/v1/places/:id
-  - [x] only the owner can update it.
-  - [x] admins can update any places.
-- [x] POST /api/v1/places
-  - [x] only a connected user can create a new place
-- [x] DELETE /api/v1/places/:id
-  - [x] only the owner can delete the place.
-  - [x] admins can delete any places.
+Secure routes [x]
 
 ## Reservations route
 
@@ -105,25 +74,42 @@ Think about all of these :
  a message explaining why it was cancelled
  - admins can cancel any reservation they want if they need to.
 
+## Reviews route
+
+Secure routes [x]
+
+## Styles route
+
+Secure routes [x]
+
+## Types route
+
+Secure routes [x]
+
+## Users route
+
+Secure routes [ ] (partially done needs some work on other routes to finish it)
+
+- [ ] Add a SOFT_DELETE route for the user
+  - [ ] only the owner or admin can soft_delete a user
+- [ ] admins can reset informations of any users (they will only see the username and have access to reset password, email, etc)
 
 ## Middlewares
 
 - [x] User middleware
-  - [x] Verify JWT origin
-  - [x] Decode JWT
-  - [x] Set a _user_ property on the request with informations from the JWT
 - [x] isLoggedIn middleware
-  - [x] Check if _user_ property exists on the request
 - [x] isOwner middleware
-  - [x] check if the resource requested was created by the user who makes the request
 - [x] isOwnerOrAdmin middleware
-  - [x] check if the resource requested was created by the user who makes the request or
-  - [x] that the user is an _admin_
 - [x] isAdmin middleware
-  - [x] must happen after isLoggedIn middleware
-  - [x] check if _user.role_ is Admin
+
+# To-Do - Database
+
+- [ ] Add a SOFT_DELETED field to user
+- [ ] Add a BLOCKED field to user
 
 # To-Do - Frontend
+
+- [ ] Full front-end refactor
 
 - [ ] Take care of 404 errors 'cause the error message is disgusting for now
   - [ ] Create a "404 - Not found" page with a link to the homepage
@@ -142,3 +128,14 @@ Think about all of these :
 For now we can only use the _login with Google_ button from https://artistfinder.world.
 And for now only my Google User is authorized for testing purposes.
 
+# Improvements / ideas
+
+- [ ] Moderator role
+  - [ ] Ability to block a user
+  - [ ] Ability to unblock a user
+  - [ ] Ability to force password change for a user
+- [ ] Option to block a user
+- [ ] Option to unlock a user
+- [ ] Option to force a user to change password
+  - User has to change password at next login (must first insert current pass)
+- [ ] Cancel a soft_delete

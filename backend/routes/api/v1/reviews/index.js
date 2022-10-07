@@ -1,15 +1,11 @@
-/* Routes to "protect" :
-* PUT /api/v1/types/:id
-* - a user can only update a review he made
-* DELETE /api/v1/types/:id
-* - a user can only delete a review he made
-* - admins can delete any review they want
-*/
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { reviewSchema, idSchema } = require('../../../lib/validation.js');
 const { validationError } = require('../../../lib/utils.js');
+
+const { isLoggedIn } = require('../../../middlewares/isLoggedIn.js');
+const { isOwnerOrAdmin } = require('../../middlewares/isOwnerOrAdmin.js');
 
 const router = express.Router();
 
@@ -75,7 +71,7 @@ router.get('/place/:id', (req, res, next) => {
 
 // POST Routes
 // INSERT new review
-router.post('/', (req, res, next) => {
+router.post('/', isLoggedIn, (req, res, next) => {
   const { error } = reviewSchema.validate(req.body);
   if ( error === undefined ) {
     const connection = createDBConnection();
@@ -93,7 +89,7 @@ router.post('/', (req, res, next) => {
 
 // PUT Routes
 // UPDATE review with review_id = :id
-router.put('/:id', (req, res, next) => {
+router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const { error } = reviewSchema.validate(req.body);
@@ -115,7 +111,7 @@ router.put('/:id', (req, res, next) => {
 
 // DELETE Routes
 // DELETE review with review_id = :id
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();

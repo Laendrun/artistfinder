@@ -1,16 +1,11 @@
-/* Routes to "protect" :
-* PUT /api/v1/types/:id
-* - only an admin can update a type
-* POST /api/v1/types
-* - only an admin can insert a new type
-* DELETE /api/v1/types/:id
-* - only an admin can delete a type
-*/
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, artistSchema } = require('../../../lib/validation.js');
 const { validationError } = require('../../../lib/utils.js');
+
+const { isLoggedIn } = require('../../../middlewares/isLoggedIn.js');
+const { isAdmin } = require('../../middlewares/isAdmin.js');
 
 const router = express.Router();
 
@@ -44,7 +39,7 @@ router.get('/:id', (req, res, next) => {
 
 // POST Routes
 // INSERT new style
-router.post('/', (req, res, next) => {
+router.post('/', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = typeSchema.validate(req.body);
   if ( error === undefined ) {
     const connection = createDBConnection();
@@ -62,7 +57,7 @@ router.post('/', (req, res, next) => {
 
 // PUT Routes
 // UPDATE type WHERE type_id = :id
-router.put('/:id', (req, res, next) => {
+router.put('/:id', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined )  {
     const { error } = typeSchema.validate(req.body);
@@ -84,7 +79,7 @@ router.put('/:id', (req, res, next) => {
 
 // DELETE Routes
 // DELETE type WHERE type_id = :id
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();

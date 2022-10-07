@@ -1,17 +1,12 @@
-/* Routes to "protect" :
-* PUT /api/v1/user/:id
-* - a user can only update itself
-* - admins can update any user (but can't see the actual data of the user)
-* DELETE /api/v1/user/:id
-* - a user can only delete itself
-* - admins can delete any user
-*/
-
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, userSchema } = require('../../../lib/validation.js');
 const { validationError } = require('../../../lib/utils.js');
+
+const { isLoggedIn } = require('../../../middlewares/isLoggedIn.js');
+const { isOwner } = require('../../middlewares/isOwner');
+const { isOwnerOrAdmin } = require('../../middlewares/isOwnerOrAdmin.js');
 
 const router = express.Router();
 
@@ -19,7 +14,7 @@ const router = express.Router();
 // GET all users
 router.get('/', (req, res, next) => {
   const connection = createDBConnection();
-  connection.promise().query('SELECT * FROM `Users`')
+  connection.promise().query('SELECT user_username FROM `Users`')
   .then(([rows, fields]) => {
     res.json(rows);
   })
@@ -28,7 +23,7 @@ router.get('/', (req, res, next) => {
 });
 
 // GET user WHERE user_id = :id
-router.get('/:id', (req, res, next) => {
+router.get('/:id', isLoggedIn, isOwner, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
@@ -63,7 +58,7 @@ router.post('/', (req, res, next) => {
 
 // PUT Routes
 // UPDATE user WHERE user_id = :id
-router.put('/:id', (req, res, next) => {
+router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const { error } = userSchema.validate(req.body);
@@ -85,7 +80,7 @@ router.put('/:id', (req, res, next) => {
 
 // DELETE Routes
 // DELETE user WHERE user_id = :id
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
