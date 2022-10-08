@@ -41,6 +41,12 @@ function logDBError(error) {
   console.error(error.sql);
 }
 
+function dbNotFound(res, next) {
+  res.status(404);
+  const err = new Error('Requested resource not found.');
+  next(err);
+}
+
 module.exports = {
   validationError,
   unauthorized,
@@ -49,4 +55,5 @@ module.exports = {
   postError,
   deleteError,
   logDBError,
+  dbNotFound,
 }

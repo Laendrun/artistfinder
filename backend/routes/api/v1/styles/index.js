@@ -2,7 +2,7 @@ const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, styleSchema } = require('../../../lib/validation.js');
-const { validationError, getError, putError, postError, deleteError, logDBError } = require('../../../lib/utils.js');
+const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isAdmin } = require('../../../middlewares/');
 
@@ -14,7 +14,11 @@ router.get('/', (req, res, next) => {
   const connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Styles`')
   .then(([rows, fields]) => {
-    res.json(rows);
+    if (rows.length != 0) {
+      res.json(rows);
+    } else {
+      dbNotFound(res, next);
+    }
   })
   .catch((error) => {
     logDBError(error);
@@ -30,7 +34,11 @@ router.get('/:id', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Styles` WHERE style_id = "'+req.params.id+'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -55,7 +63,7 @@ router.post('/', isLoggedIn, isAdmin, (req, res, next) => {
     })
     .catch((error) => {
       logDBError(error);
-      getError(res, next);
+      postError(res, next);
     })
     .then( () => connection.end());
   } else {

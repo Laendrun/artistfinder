@@ -2,7 +2,7 @@ const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { reviewSchema, idSchema } = require('../../../lib/validation.js');
-const { validationError, getError, putError, postError, deleteError, logDBError } = require('../../../lib/utils.js');
+const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isOwnerOrAdmin } = require('../../../middlewares/');
 
@@ -14,7 +14,11 @@ router.get('/', (req, res, next) => {
   const connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Reviews`')
   .then(([rows, fields]) => {
-    res.json(rows);
+    if (rows.length != 0) {
+      res.json(rows);
+    } else {
+      dbNotFound(res, next);
+    }
   })
   .catch((error) => {
     logDBError(error);
@@ -30,7 +34,11 @@ router.get('/:id', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reviews` WHERE review_id = "'+ req.params.id+'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -49,7 +57,11 @@ router.get('/artist/:id', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reviews` WHERE artist_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -68,7 +80,11 @@ router.get('/place/:id', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reviews` WHERE place_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);

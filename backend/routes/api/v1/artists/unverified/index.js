@@ -1,8 +1,8 @@
 const express = require('express');
 
 const { createDBConnection } = require('../../../../lib/db.js');
-const { idSchema, nameSchema, artistSchema } = require('../../../../lib/validation.js');
-const { validationError, getError, putError, postError, deleteError, logDBError } = require('../../../../lib/utils.js');
+const { idSchema, nameSchema } = require('../../../../lib/validation.js');
+const { validationError, getError, logDBError, dbNotFound } = require('../../../../lib/utils.js');
 
 const { isOwnerOrAdmin, isAdmin } = require('../../../../middlewares/');
 
@@ -15,7 +15,11 @@ router.get('/', isAdmin, (req, res, next) => {
 
   connection.promise().query('SELECT * FROM `Artists` WHERE `artist_validated` = "0"')
   .then(([rows, field]) => {
-    res.json(rows);
+    if (rows.length != 0) {
+      res.json(rows);
+    } else {
+      dbNotFound(res, next);
+    }
   })
   .catch((error) => {
     logDBError(error);
@@ -29,7 +33,11 @@ router.get('/groups/', isAdmin, (req, res, next) => {
   connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Artists` WHERE `artist_isGroup` = true AND `artist_validated` = "0"')
   .then(([rows, field]) => {
-    res.json(rows);
+    if (rows.length != 0) {
+      res.json(rows);
+    } else {
+      dbNotFound(res, next);
+    }
   })
   .catch((error) => {
     logDBError(error);
@@ -43,7 +51,11 @@ router.get('/notGroups/', isAdmin, (req, res, next) => {
   connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Artists` WHERE `artist_isGroup` = false AND `artist_validated` = "0"')
   .then(([rows, fields]) => {
-    res.json(rows);
+    if (rows.length != 0) {
+      res.json(rows);
+    } else {
+      dbNotFound(res, next);
+    }
   })
   .catch((error) => {
     logDBError(error);
@@ -59,7 +71,11 @@ router.get('/type/:type_id', isAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` WHERE Artists.type_id = ' + req.params.type_id + ' AND `artist_validated` = "0"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -79,7 +95,11 @@ router.get('/type/name/:name', isAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` INNER JOIN `Types` ON Artists.type_id = Types.type_id WHERE Types.type_name LIKE \'%'+req.params.name+'%\' AND `artist_validated` = "0"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -98,7 +118,11 @@ router.get('/:id', isOwnerOrAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` WHERE Artists.artist_id = "'+ req.params.id +'" AND `artist_validated` = "0"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -118,7 +142,11 @@ router.get('/name/:name', isAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` WHERE Artists.artist_name LIKE \'%'+req.params.name+'%\' AND `artist_validated` = "0"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);

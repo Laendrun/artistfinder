@@ -2,7 +2,7 @@ const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, nameSchema, artistSchema } = require('../../../lib/validation.js');
-const { validationError, getError, putError, postError, deleteError, logDBError } = require('../../../lib/utils.js');
+const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isOwnerOrAdmin, isAdmin } = require('../../../middlewares/');
 
@@ -21,7 +21,11 @@ router.get('/', isLoggedIn, isAdmin, (req, res, next) => {
 
   connection.promise().query('SELECT * FROM `Artists`')
   .then(([rows, field]) => {
-    res.json(rows);
+    if (rows.length != 0) {
+      res.json(rows);
+    } else {
+      dbNotFound(res, next);
+    }
   })
   .catch((error) => {
     logDBError(error);
@@ -35,7 +39,11 @@ router.get('/groups/', isLoggedIn, isAdmin, (req, res, next) => {
   connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Artists` WHERE `artist_isGroup` = true')
   .then(([rows, field]) => {
-    res.json(rows);
+    if (rows.length != 0) {
+      res.json(rows);
+    } else {
+      dbNotFound(res, next);
+    }
   })
   .catch((error) => {
     logDBError(error);
@@ -49,7 +57,11 @@ router.get('/notGroups/', isLoggedIn, isAdmin, (req, res, next) => {
   connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Artists` WHERE `artist_isGroup` = false')
   .then(([rows, fields]) => {
-    res.json(rows);
+    if (rows.length != 0) {
+      res.json(rows);
+    } else {
+      dbNotFound(res, next);
+    }
   })
   .catch((error) => {
     logDBError(error);
@@ -65,7 +77,11 @@ router.get('/type/:type_id', isLoggedIn, isAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` WHERE Artists.type_id = ' + req.params.type_id)
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -85,7 +101,11 @@ router.get('/type/name/:name', isLoggedIn, isAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` INNER JOIN `Types` ON Artists.type_id = Types.type_id WHERE Types.type_name LIKE \'%'+req.params.name+'%\'')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -104,7 +124,11 @@ router.get('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` WHERE Artists.artist_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -124,7 +148,11 @@ router.get('/name/:name', isLoggedIn, isAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` WHERE Artists.artist_name LIKE \'%'+req.params.name+'%\'')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -148,7 +176,11 @@ router.post('/', isLoggedIn, (req, res, next) => {
     req.body.isGroup = req.body.isGroup ? 1 : 0;
     connection.promise().query('INSERT INTO `Artists` (`artist_id`, `artist_name`, `artist_isGroup`, `type_id`, `style_id`) '+values)
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -174,7 +206,7 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
       req.body.isGroup = req.body.isGroup ? 1 : 0;
       connection.promise().query('UPDATE `Artists` SET artist_name = "'+ req.body.artist_name +'", artist_isGroup = "'+ req.body.artist_isGroup +'", type_id = "'+ req.body.type_id +'", style_id = "'+ req.body.style_id +'" WHERE artist_id = "'+ req.params.id+'"')
       .then(([rows, fields]) => {
-        res.json(rows)
+        res.json(rows);
       })
       .catch((error) => {
         logDBError(error);
@@ -196,7 +228,7 @@ router.put('/:id/verify', isLoggedIn, isAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('UPDATE `Artists` SET artist_validated = "1" WHERE artist_id = "'+ req.params.id+'"')
     .then(([rows, fields]) => {
-      res.json(rows)
+      res.json(rows);
     })
     .catch((error) => {
       logDBError(error);
@@ -215,7 +247,7 @@ router.put('/:id/unverify', isLoggedIn, isAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('UPDATE `Artists` SET artist_validated = "0" WHERE artist_id = "'+ req.params.id+'"')
     .then(([rows, fields]) => {
-      res.json(rows)
+      res.json(rows);
     })
     .catch((error) => {
       logDBError(error);
@@ -236,7 +268,7 @@ router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('DELETE FROM `Artists` WHERE artist_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
-      res.json(rows)
+      res.json(rows);
     })
     .catch((error) => {
       logDBError(error);

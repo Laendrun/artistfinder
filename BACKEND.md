@@ -2,6 +2,11 @@
 
 ## To-Do
 
+- [ ] Take care of sql requests returning 0 rows
+  - [x] in the utils, create a DBNotFound function that returns a 404 error
+  - For get method check with rows.length
+    - [x] done for all get routes (normally, I maybe forgot one or two)
+  - For delete method check with affectedRows (maybe post & put too)
 - [ ] Update error messages sent from the API
 - [x] Send an error message when there's a problem with the SQL request
   - [x] artists
@@ -42,7 +47,6 @@
   - isLoggedIn, isAdmin
 - [x] Create all artists routes to return information about all unverified artists
   - isLoggedIn, isAdmin
-- [ ] Take care of sql requests returning 0 rows (when requesting a verified artist by id that is an unverified artist for example)
 
 ### Users route
 

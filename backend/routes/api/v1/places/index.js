@@ -2,7 +2,7 @@ const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, nameSchema, placeSchema, citySchema, post_codeSchema, capacitySchema } = require('../../../lib/validation.js');
-const { validationError, getError, putError, postError, deleteError, logDBError } = require('../../../lib/utils.js');
+const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isOwnerOrAdmin } = require('../../../middlewares/');
 
@@ -14,7 +14,11 @@ router.get('/', (req, res, next) => {
   const connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Places`')
   .then(([rows, fields]) => {
-    res.json(rows);
+    if (rows.length != 0) {
+      res.json(rows);
+    } else {
+      dbNotFound(res, next);
+    }
   })
   .catch((error) => {
     logDBError(error);
@@ -30,7 +34,11 @@ router.get('/:id', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Places` WHERE place_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -49,7 +57,11 @@ router.get('/name/:name', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Places` WHERE place_name LIKE "%'+ req.params.name +'%"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -68,7 +80,11 @@ router.get('/post_code/:post_code', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Places` WHERE place_postCode = "'+ req.params.post_code +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -87,7 +103,11 @@ router.get('/city/:city', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Places` WHERE place_city LIKE "%'+ req.params.city +'%"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -106,7 +126,11 @@ router.get('/capacity/min/:capacity', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Places` WHERE place_capacity >= "'+ req.params.capacity +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -125,7 +149,11 @@ router.get('/capacity/max/:capacity', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Places` WHERE place_capacity <= "'+ req.params.capacity +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -144,7 +172,11 @@ router.get('/capacity/is/:capacity', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Places` WHERE place_capacity = "'+ req.params.capacity +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);

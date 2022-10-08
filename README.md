@@ -65,6 +65,8 @@ Some errors could be more descriptive.
 
 ## Improvements / ideas
 
+- [ ] Send correct HTTP status code depending on the request sent to the API
+  - https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 - [ ] Moderator role
   - [ ] Ability to block a user
   - [ ] Ability to unblock a user

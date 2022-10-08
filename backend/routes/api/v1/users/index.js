@@ -2,7 +2,7 @@ const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, userSchema } = require('../../../lib/validation.js');
-const { validationError, getError, putError, postError, deleteError, logDBError } = require('../../../lib/utils.js');
+const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isAdmin, isOwner, isOwnerOrAdmin } = require('../../../middlewares/');
 
@@ -14,7 +14,11 @@ router.get('/', (req, res, next) => {
   const connection = createDBConnection();
   connection.promise().query('SELECT user_username FROM `Users`')
   .then(([rows, fields]) => {
-    res.json(rows);
+    if (rows.length != 0) {
+      res.json(rows);
+    } else {
+      dbNotFound(res, next);
+    }
   })
   .catch((error) => {
     logDBError(error);
@@ -30,7 +34,11 @@ router.get('/:id', isLoggedIn, isOwner, (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Users` WHERE user_id = "'+req.params.id+'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);

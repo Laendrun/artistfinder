@@ -2,7 +2,7 @@ const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, dateSchema, nameSchema, reservationSchema } = require('../../../lib/validation.js');
-const { validationError, getError, putError, postError, deleteError, logDBError } = require('../../../lib/utils.js');
+const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
 
 const router = express.Router();
 
@@ -12,7 +12,11 @@ router.get('/', (req, res, next) => {
   const connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Reservations`')
   .then(([rows, fields]) => {
-    res.json(rows);
+    if (rows.length != 0) {
+      res.json(rows);
+    } else {
+      dbNotFound(res, next);
+    }
   })
   .catch((error) => {
     logDBError(error);
@@ -28,7 +32,11 @@ router.get('/:id', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -47,7 +55,11 @@ router.get('/date/is/:date', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_date = "'+ req.params.date +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -66,7 +78,11 @@ router.get('/date/after/:date', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_date >= "'+ req.params.date +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -85,7 +101,11 @@ router.get('/date/before/:date', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_date <= "'+ req.params.date +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -104,7 +124,11 @@ router.get('/artist/:id', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reservations` WHERE artist_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -123,7 +147,11 @@ router.get('/artist/name/:name', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reservations` INNER JOIN `Artists` ON Reservations.artist_id = Artists.artist_id WHERE Artists.artist_name LIKE "%'+ req.params.name +'%"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -142,7 +170,11 @@ router.get('/place/:id', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reservations` WHERE place_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -161,7 +193,11 @@ router.get('/place/name/:name', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reservations` INNER JOIN `Places` ON Reservations.place_id = Places.place_id WHERE Places.place_name LIKE "%'+ req.params.name +'%"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -180,7 +216,11 @@ router.get('/category/:id', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reservations` WHERE category_id = "'+ req.params.id + '"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -199,7 +239,11 @@ router.get('/category/name/:name', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Reservations` INNER JOIN `Categories` ON Reservations.category_id = Categories.category_id WHERE Categories.category_name LIKE "%'+ req.params.name +'%"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.length != 0) {
+        res.json(rows);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
