@@ -2,7 +2,8 @@
 
 ## To-Do
 
-- [ ] Replace all console.log by console.error on SQL requests errors
+- [ ] Update error messages sent from the API
+- [x] Send an error message when there's a problem with the SQL request
   - [x] artists
   - [x] auth
   - [x] categories
@@ -13,17 +14,16 @@
   - [x] styles
   - [x] types
   - [x] users
-- [ ] Send an error message when there's a problem with the SQL request
-- [ ] Update error messages sent from the API
-- [ ] Update return messages sent from the API
+- [x] Update return messages sent from the API
   - Do not send DB response
 
 ### Utils
 
-- [ ] Create a GET_ERROR for db related errors on SELECT
-- [ ] Create a PUT_ERROR for db related errors on UPDATE
-- [ ] Create a POST_ERROR for db related errors on INSERT
-- [ ] Create a DELETE_ERROR for db related errors on DELETE
+- [x] Create a GET_ERROR for db related errors on SELECT
+- [x] Create a PUT_ERROR for db related errors on UPDATE
+- [x] Create a POST_ERROR for db related errors on INSERT
+- [x] Create a DELETE_ERROR for db related errors on DELETE
+- [x] Create a LOGDBERROR func, logging specific information about the sql error
 
 ### Auth Route
 

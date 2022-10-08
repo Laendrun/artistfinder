@@ -2,7 +2,7 @@ const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, nameSchema, placeSchema, citySchema, post_codeSchema, capacitySchema } = require('../../../lib/validation.js');
-const { validationError } = require('../../../lib/utils.js');
+const { validationError, getError, putError, postError, deleteError, logDBError } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isOwnerOrAdmin } = require('../../../middlewares/');
 
@@ -16,7 +16,10 @@ router.get('/', (req, res, next) => {
   .then(([rows, fields]) => {
     res.json(rows);
   })
-  .catch(console.error)
+  .catch((error) => {
+    logDBError(error);
+    getError(res, next);
+  })
   .then( () => connection.end());
 });
 
@@ -29,7 +32,10 @@ router.get('/:id', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -45,7 +51,10 @@ router.get('/name/:name', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -61,7 +70,10 @@ router.get('/post_code/:post_code', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -77,7 +89,10 @@ router.get('/city/:city', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -93,7 +108,10 @@ router.get('/capacity/min/:capacity', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -109,7 +127,10 @@ router.get('/capacity/max/:capacity', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -125,7 +146,10 @@ router.get('/capacity/is/:capacity', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -143,7 +167,10 @@ router.post('/', isLoggedIn, (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      postError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -162,7 +189,10 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
       .then(([rows, fields]) => {
         res.json(rows);
       })
-      .catch(console.error)
+      .catch((error) => {
+        logDBError(error);
+        putError(res, next);
+      })
       .then( () => connection.end());
     } else {
       validationError(error, res, next);
@@ -182,7 +212,10 @@ router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      deleteError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { signupSchema } = require('../../../lib/validation.js');
-const { validationError } = require('../../../lib/utils.js');
+const { validationError, getError, postError, logDBError } = require('../../../lib/utils.js');
 
 const router = express.Router();
 
@@ -44,7 +44,10 @@ router.post('/google/', (req, res, next) => {
         const token = jwt.sign(data, secret);
         res.json(token);
       })
-      .catch(console.error);
+      .catch((error) => {
+        logDBError(error);
+        postError(res, next);
+      });
     } else {
       connection.promise().query('SELECT * FROM `Users` WHERE user_email = "'+user_email+'" AND user_login_type = "'+user_login_type+'"')
       .then(([rows, fields]) => {
@@ -62,11 +65,17 @@ router.post('/google/', (req, res, next) => {
         const token = jwt.sign(data, secret);
         res.json(token);
       })
-      .catch(console.error);
+      .catch((error) => {
+        logDBError(error);
+        getError(res, next);
+      });
     }
 
   })
-  .catch(console.log())
+  .catch((error) => {
+    logDBError(error);
+    getError(res, next);
+  })
   .then( () => connection.end());
 
 });

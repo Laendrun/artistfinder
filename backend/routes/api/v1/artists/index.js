@@ -2,7 +2,7 @@ const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, nameSchema, artistSchema } = require('../../../lib/validation.js');
-const { validationError } = require('../../../lib/utils.js');
+const { validationError, getError, putError, postError, deleteError, logDBError } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isOwnerOrAdmin, isAdmin } = require('../../../middlewares/');
 
@@ -17,7 +17,10 @@ router.get('/', (req, res, next) => {
   .then(([rows, field]) => {
     res.json(rows);
   })
-  .catch(console.log())
+  .catch((error) => {
+    logDBError(error);
+    getError(res, next);
+  })
   .then( () => connection.end());
 });
 
@@ -28,7 +31,10 @@ router.get('/groups/', (req, res, next) => {
   .then(([rows, field]) => {
     res.json(rows);
   })
-  .catch(console.log())
+  .catch((error) => {
+    logDBError(error);
+    getError(res, next);
+  })
   .then( () => connection.end());
 });
 
@@ -39,7 +45,10 @@ router.get('/notGroups/', (req, res, next) => {
   .then(([rows, fields]) => {
     res.json(rows);
   })
-  .catch(console.log())
+  .catch((error) => {
+    logDBError(error);
+    getError(res, next);
+  })
   .then( () => connection.end());
 });
 
@@ -52,7 +61,10 @@ router.get('/type/:type_id', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -69,7 +81,10 @@ router.get('/type/name/:name', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.erro)
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -85,7 +100,10 @@ router.get('/:id', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -102,7 +120,10 @@ router.get('/name/:name', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -123,7 +144,10 @@ router.post('/', isLoggedIn, (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      postError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -146,7 +170,10 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
       .then(([rows, fields]) => {
         res.json(rows)
       })
-      .catch(console.error)
+      .catch((error) => {
+        logDBError(error);
+        putError(res, next);
+      })
       .then( () => connection.end());
     } else {
       validationError(error, res, next);
@@ -165,7 +192,10 @@ router.put('/:id/verify', isLoggedIn, isAdmin, (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows)
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      putError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -181,7 +211,10 @@ router.put('/:id/unverify', isLoggedIn, isAdmin, (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows)
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      putError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -199,7 +232,10 @@ router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows)
     })
-    .catch(console.error)
+    .catch((error) => {
+      logDBError(error);
+      deleteError(res, next);
+    })
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
