@@ -6,19 +6,19 @@ It'll be easier to check this file instead of searching through the files.
 # Artists
 
 - GET /api/v1/artists/
-  - all
+  - isLoggedIn, isAdmin
 - GET /api/v1/artists/groups/
-  - all
+  - isLoggedIn, isAdmin
 - GET /api/v1/artists/notGroups
-  - all
+  - isLoggedIn, isAdmin
 - GET /api/v1/artists/type/:type_id
-  - all
+  - isLoggedIn, isAdmin
 - GET /api/v1/artists/type/name/:name
-  - all
+  - isLoggedIn, isAdmin
 - GET /api/v1/artists/:id
-  - all
+  - isLoggedIn, isOwnerOrAdmin
 - GET /api/v1/artists/name/:name
-  - all
+  - isLoggedIn, isAdmin
 
 - POST /api/v1/artists/
   - isLoggedIn
@@ -32,6 +32,40 @@ It'll be easier to check this file instead of searching through the files.
 
 - DELETE /api/v1/artists/:id
   - isLoggedIn, isOwnerOrAdmin
+
+## Verified artists
+
+- GET /api/v1/artists/verified/
+  - all
+- GET /api/v1/artists/verified/groups/
+  - all
+- GET /api/v1/artists/verified/notGroups
+  - all
+- GET /api/v1/artists/verified/type/:type_id
+  - all
+- GET /api/v1/artists/verified/type/name/:name
+  - all
+- GET /api/v1/artists/verified/:id
+  - all
+- GET /api/v1/artists/verified/name/:name
+  - all
+
+## Unverified artists
+
+- GET /api/v1/artists/unverified/
+  - isLoggedIn, isAdmin
+- GET /api/v1/artists/unverified/groups/
+  - isLoggedIn, isAdmin
+- GET /api/v1/artists/unverified/notGroups
+  - isLoggedIn, isAdmin
+- GET /api/v1/artists/unverified/type/:type_id
+  - isLoggedIn, isAdmin
+- GET /api/v1/artists/unverified/type/name/:name
+  - isLoggedIn, isAdmin
+- GET /api/v1/artists/unverified/:id
+  - isLoggedIn, isOwnerOrAdmin
+- GET /api/v1/artists/unverified/name/:name
+  - isLoggedIn, isAdmin
 
 # Auth
 

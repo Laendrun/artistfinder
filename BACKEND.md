@@ -36,16 +36,13 @@
 
 ### Artists route
 
-- [ ] Change all artists routes to only return information about verified artists for everyone
-- [ ] Create all artists routes to return information about all artists
-- [ ] Create all artists routes to return information about all unverified artists
-- Modify the directory structure to have one directory for the different routes :
-  - [ ] /api/v1/artists/
-    - -> all artists, Admin access only
-  - [ ] /api/v1/artists/verified
-    - -> all verified artists, everyone can access this
-  - [ ] /api/v1/artists/unverified
-    - -> all unverified artists, admins or moderators
+- [x] Change all artists routes to only return information about verified artists for everyone
+  - all
+- [x] Create all artists routes to return information about all artists
+  - isLoggedIn, isAdmin
+- [x] Create all artists routes to return information about all unverified artists
+  - isLoggedIn, isAdmin
+- [ ] Take care of sql requests returning 0 rows (when requesting a verified artist by id that is an unverified artist for example)
 
 ### Users route
 

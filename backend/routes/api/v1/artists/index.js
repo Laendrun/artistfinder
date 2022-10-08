@@ -6,11 +6,17 @@ const { validationError, getError, putError, postError, deleteError, logDBError 
 
 const { isLoggedIn, isOwnerOrAdmin, isAdmin } = require('../../../middlewares/');
 
+const verified = require('./verified/');
+const unverified = require('./unverified/');
+
 const router = express.Router();
+
+router.use('/verified/', verified);
+router.use('/unverified/', isLoggedIn, unverified);
 
 // GET routes 
 // GET all artists
-router.get('/', (req, res, next) => {
+router.get('/', isLoggedIn, isAdmin, (req, res, next) => {
   connection = createDBConnection();
 
   connection.promise().query('SELECT * FROM `Artists`')
@@ -25,7 +31,7 @@ router.get('/', (req, res, next) => {
 });
 
 // GET all groups
-router.get('/groups/', (req, res, next) => {
+router.get('/groups/', isLoggedIn, isAdmin, (req, res, next) => {
   connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Artists` WHERE `artist_isGroup` = true')
   .then(([rows, field]) => {
@@ -39,7 +45,7 @@ router.get('/groups/', (req, res, next) => {
 });
 
 // GET all notGroups
-router.get('/notGroups/', (req, res, next) => {
+router.get('/notGroups/', isLoggedIn, isAdmin, (req, res, next) => {
   connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Artists` WHERE `artist_isGroup` = false')
   .then(([rows, fields]) => {
@@ -53,7 +59,7 @@ router.get('/notGroups/', (req, res, next) => {
 });
 
 // GET all artists by type_id
-router.get('/type/:type_id', (req, res, next) => {
+router.get('/type/:type_id', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id : req.params.type_id});
   if (error === undefined) {
     connection = createDBConnection();
@@ -72,7 +78,7 @@ router.get('/type/:type_id', (req, res, next) => {
 });
 
 // GET all artists where type name LIKE :name
-router.get('/type/name/:name', (req, res, next) => {
+router.get('/type/name/:name', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = nameSchema.validate({name: req.params.name});
 
   if (error === undefined) {
@@ -92,7 +98,7 @@ router.get('/type/name/:name', (req, res, next) => {
 });
 
 // GET artist by :ID
-router.get('/:id', (req, res, next) => {
+router.get('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if (error === undefined){
     connection = createDBConnection();
@@ -111,7 +117,7 @@ router.get('/:id', (req, res, next) => {
 });
 
 // GET all artists where name LIKE :name
-router.get('/name/:name', (req, res, next) => {
+router.get('/name/:name', isLoggedIn, isAdmin, (req, res, next) => {
   
   const { error } = nameSchema.validate({name: req.params.name});
   if (error === undefined){
