@@ -16,7 +16,7 @@ router.get('/', (req, res, next) => {
   .then(([rows, fields]) => {
     res.json(rows);
   })
-  .catch(console.log())
+  .catch(console.error)
   .then( () => connection.end());
 });
 
@@ -29,7 +29,7 @@ router.get('/:id', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -45,7 +45,7 @@ router.get('/artist/:id', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -61,7 +61,7 @@ router.get('/place/:id', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -79,7 +79,7 @@ router.post('/', isLoggedIn, (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -98,7 +98,7 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
       .then(([rows, fields]) => {
         res.json(rows);
       })
-      .catch(console.log())
+      .catch(console.error)
       .then( () => connection.end());
     } else {
       validationError(error, res, next);
@@ -118,7 +118,7 @@ router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);

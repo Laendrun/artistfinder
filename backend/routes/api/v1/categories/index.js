@@ -17,7 +17,7 @@ router.get('/', (req, res, next) => {
   .then(([rows, fields]) => {
     res.json(rows);
   })
-  .catch(console.log())
+  .catch(console.error)
   .then( () => connection.end());
 });
 
@@ -30,7 +30,7 @@ router.get('/:id', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -46,7 +46,7 @@ router.get('/name/:name', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -64,7 +64,7 @@ router.post('/', isLoggedIn, isAdmin, (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -81,7 +81,7 @@ router.put('/:id', isLoggedIn, isAdmin, (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -98,7 +98,7 @@ router.delete('/:id', isLoggedIn, isAdmin, (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);

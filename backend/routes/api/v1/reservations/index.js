@@ -14,7 +14,7 @@ router.get('/', (req, res, next) => {
   .then(([rows, fields]) => {
     res.json(rows);
   })
-  .catch(console.log())
+  .catch(console.error)
   .then( () => connection.end());
 });
 
@@ -27,7 +27,7 @@ router.get('/:id', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -43,7 +43,7 @@ router.get('/date/is/:date', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -59,7 +59,7 @@ router.get('/date/after/:date', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -75,7 +75,7 @@ router.get('/date/before/:date', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -107,7 +107,7 @@ router.get('/artist/name/:name', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -123,7 +123,7 @@ router.get('/place/:id', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -139,7 +139,7 @@ router.get('/place/name/:name', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -155,7 +155,7 @@ router.get('/category/:id', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -171,7 +171,7 @@ router.get('/category/name/:name', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -189,7 +189,7 @@ router.post('/', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);
@@ -208,7 +208,7 @@ router.put('/:id', (req, res, next) => {
       .then(([rows, fields]) => {
         res.json(rows);
       })
-      .catch(console.log())
+      .catch(console.error)
       .then( () => connection.end());
     } else {
       validationError(error, res, next);
@@ -228,7 +228,7 @@ router.delete('/:id', (req, res, next) => {
     .then(([rows, fields]) => {
       res.json(rows);
     })
-    .catch(console.log())
+    .catch(console.error)
     .then( () => connection.end());
   } else {
     validationError(error, res, next);

@@ -44,7 +44,7 @@ router.post('/google/', (req, res, next) => {
         const token = jwt.sign(data, secret);
         res.json(token);
       })
-      .catch(console.log());
+      .catch(console.error);
     } else {
       connection.promise().query('SELECT * FROM `Users` WHERE user_email = "'+user_email+'" AND user_login_type = "'+user_login_type+'"')
       .then(([rows, fields]) => {
@@ -62,7 +62,7 @@ router.post('/google/', (req, res, next) => {
         const token = jwt.sign(data, secret);
         res.json(token);
       })
-      .catch(console.log());
+      .catch(console.error);
     }
 
   })
