@@ -18,7 +18,7 @@ router.use('/unverified/', isLoggedIn, unverified);
 // GET routes 
 // GET all artists
 router.get('/', isLoggedIn, isAdmin, (req, res, next) => {
-  connection = createDBConnection();
+  const connection = createDBConnection();
 
   connection.promise().query('SELECT * FROM `Artists`')
   .then(([rows, field]) => {
@@ -37,7 +37,7 @@ router.get('/', isLoggedIn, isAdmin, (req, res, next) => {
 
 // GET all groups
 router.get('/groups/', isLoggedIn, isAdmin, (req, res, next) => {
-  connection = createDBConnection();
+  const connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Artists` WHERE `artist_isGroup` = true')
   .then(([rows, field]) => {
     if (rows.length != 0) {
@@ -55,7 +55,7 @@ router.get('/groups/', isLoggedIn, isAdmin, (req, res, next) => {
 
 // GET all notGroups
 router.get('/notGroups/', isLoggedIn, isAdmin, (req, res, next) => {
-  connection = createDBConnection();
+  const connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Artists` WHERE `artist_isGroup` = false')
   .then(([rows, fields]) => {
     if (rows.length != 0) {
@@ -75,7 +75,7 @@ router.get('/notGroups/', isLoggedIn, isAdmin, (req, res, next) => {
 router.get('/type/:type_id', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id : req.params.type_id});
   if (error === undefined) {
-    connection = createDBConnection();
+    const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` WHERE Artists.type_id = ' + req.params.type_id)
     .then(([rows, fields]) => {
       if (rows.length != 0) {
@@ -99,7 +99,7 @@ router.get('/type/name/:name', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = nameSchema.validate({name: req.params.name});
 
   if (error === undefined) {
-    connection = createDBConnection();
+    const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` INNER JOIN `Types` ON Artists.type_id = Types.type_id WHERE Types.type_name LIKE \'%'+req.params.name+'%\'')
     .then(([rows, fields]) => {
       if (rows.length != 0) {
@@ -122,7 +122,7 @@ router.get('/type/name/:name', isLoggedIn, isAdmin, (req, res, next) => {
 router.get('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if (error === undefined){
-    connection = createDBConnection();
+    const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` WHERE Artists.artist_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
       if (rows.length != 0) {
@@ -146,7 +146,7 @@ router.get('/name/:name', isLoggedIn, isAdmin, (req, res, next) => {
   
   const { error } = nameSchema.validate({name: req.params.name});
   if (error === undefined){
-    connection = createDBConnection();
+    const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` WHERE Artists.artist_name LIKE \'%'+req.params.name+'%\'')
     .then(([rows, fields]) => {
       if (rows.length != 0) {
@@ -172,7 +172,7 @@ router.post('/', isLoggedIn, (req, res, next) => {
   const { error } = artistSchema.validate(req.body);
 
   if ( error === undefined ) {
-    connection = createDBConnection();
+    const connection = createDBConnection();
     let values = `VALUES (NULL, "${req.body.artist_name}", "${req.body.artist_isGroup}", "${req.body.type_id}", "${req.body.style_id}")`;
     req.body.isGroup = req.body.isGroup ? 1 : 0;
     connection.promise().query('INSERT INTO `Artists` (`artist_id`, `artist_name`, `artist_isGroup`, `type_id`, `style_id`) '+values)
@@ -199,7 +199,7 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     const { error } = artistSchema.validate(req.body);
 
     if ( error === undefined ) {
-      connection = createDBConnection();
+      const connection = createDBConnection();
       req.body.isGroup = req.body.isGroup ? 1 : 0;
       connection.promise().query('UPDATE `Artists` SET artist_name = "'+ req.body.artist_name +'", artist_isGroup = "'+ req.body.artist_isGroup +'", type_id = "'+ req.body.type_id +'", style_id = "'+ req.body.style_id +'" WHERE artist_id = "'+ req.params.id+'"')
       .then(([rows, fields]) => {
@@ -226,7 +226,7 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
 router.put('/:id/verify', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if (error === undefined) {
-    connection = createDBConnection();
+    const connection = createDBConnection();
     connection.promise().query('UPDATE `Artists` SET artist_validated = "1" WHERE artist_id = "'+ req.params.id+'"')
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {
@@ -249,7 +249,7 @@ router.put('/:id/verify', isLoggedIn, isAdmin, (req, res, next) => {
 router.put('/:id/unverify', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if (error === undefined) {
-    connection = createDBConnection();
+    const connection = createDBConnection();
     connection.promise().query('UPDATE `Artists` SET artist_validated = "0" WHERE artist_id = "'+ req.params.id+'"')
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {
@@ -274,7 +274,7 @@ router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
 
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
-    connection = createDBConnection();
+    const connection = createDBConnection();
     connection.promise().query('DELETE FROM `Artists` WHERE artist_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {

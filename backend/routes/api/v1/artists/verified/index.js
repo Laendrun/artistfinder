@@ -9,8 +9,7 @@ const router = express.Router();
 // GET routes 
 // GET all artists
 router.get('/', (req, res, next) => {
-  connection = createDBConnection();
-
+  const connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Artists` WHERE `artist_validated` = "1"')
   .then(([rows, field]) => {
     if (rows.length != 0) {
@@ -28,7 +27,7 @@ router.get('/', (req, res, next) => {
 
 // GET all groups
 router.get('/groups/', (req, res, next) => {
-  connection = createDBConnection();
+  const connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Artists` WHERE `artist_isGroup` = true AND `artist_validated` = "1"')
   .then(([rows, field]) => {
     if (rows.length != 0) {
@@ -46,7 +45,7 @@ router.get('/groups/', (req, res, next) => {
 
 // GET all notGroups
 router.get('/notGroups/', (req, res, next) => {
-  connection = createDBConnection();
+  const connection = createDBConnection();
   connection.promise().query('SELECT * FROM `Artists` WHERE `artist_isGroup` = false AND `artist_validated` = "1"')
   .then(([rows, fields]) => {
     if (rows.length != 0) {
@@ -66,7 +65,7 @@ router.get('/notGroups/', (req, res, next) => {
 router.get('/type/:type_id', (req, res, next) => {
   const { error } = idSchema.validate({id : req.params.type_id});
   if (error === undefined) {
-    connection = createDBConnection();
+    const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` WHERE Artists.type_id = ' + req.params.type_id + ' AND `artist_validated` = "1"')
     .then(([rows, fields]) => {
       if (rows.length != 0) {
@@ -90,7 +89,7 @@ router.get('/type/name/:name', (req, res, next) => {
   const { error } = nameSchema.validate({name: req.params.name});
 
   if (error === undefined) {
-    connection = createDBConnection();
+    const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` INNER JOIN `Types` ON Artists.type_id = Types.type_id WHERE Types.type_name LIKE \'%'+req.params.name+'%\' AND `artist_validated` = "1"')
     .then(([rows, fields]) => {
       if (rows.length != 0) {
@@ -113,7 +112,7 @@ router.get('/type/name/:name', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if (error === undefined){
-    connection = createDBConnection();
+    const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` WHERE Artists.artist_id = "'+ req.params.id +'" AND `artist_validated` = "1"')
     .then(([rows, fields]) => {
       if (rows.length != 0) {
@@ -137,7 +136,7 @@ router.get('/name/:name', (req, res, next) => {
   
   const { error } = nameSchema.validate({name: req.params.name});
   if (error === undefined){
-    connection = createDBConnection();
+    const connection = createDBConnection();
     connection.promise().query('SELECT * FROM `Artists` WHERE Artists.artist_name LIKE \'%'+req.params.name+'%\' AND `artist_validated` = "1"')
     .then(([rows, fields]) => {
       if (rows.length != 0) {

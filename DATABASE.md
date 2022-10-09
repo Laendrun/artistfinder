@@ -9,3 +9,6 @@
 
 - [x] Maybe adding a passwords table will be useful don't you think ?
   - How did I do not to think about this...
+
+- [ ] Add a user_blockedBy field to the Users table
+- [ ] Add a user_deletedBy field to the Users table

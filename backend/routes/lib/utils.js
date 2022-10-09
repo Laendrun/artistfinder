@@ -103,6 +103,12 @@ function unableToLogin(res, next) {
   next(err);
 }
 
+function userBlocked(res, next) {
+  res.status(400);
+  const err = new Error("User locked by an administrator.");
+  next(err);
+}
+
 module.exports = {
   validationError,
   unauthorized,
@@ -120,4 +126,5 @@ module.exports = {
   usernameExists,
   emailExists,
   unableToLogin,
+  userBlocked,
 }

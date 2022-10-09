@@ -117,7 +117,8 @@ router.put('/:id/delete', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     .catch((error) => {
       logDBError(error);
       putError(res, next);
-    });
+    })
+    .then( () => connection.end());
   } else {
     validationError(error, res, next);
   }
@@ -140,7 +141,8 @@ router.put('/:id/switchLogin', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     .catch((error) => {
       logDBError(error);
       putError(res, next);
-    });
+    })
+    .then( () => connection.end());
   } else {
     validationError(error, res, next);
   }
