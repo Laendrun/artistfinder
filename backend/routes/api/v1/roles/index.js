@@ -3,6 +3,7 @@ const express = require('express');
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, roleSchema } = require('../../../lib/validation.js');
 const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
+const { resourceCreated, resourceUpdated, resourceDeleted } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isAdmin } = require('../../../middlewares/');
 
@@ -59,7 +60,7 @@ router.post('/', isLoggedIn, isAdmin, (req, res, next) => {
     const values = ` VALUES (NULL, "${req.body.role_name}")`;
     connection.promise().query('INSERT INTO `Roles` (`role_id`, `role_name`)'+values)
     .then(([rows, fields]) => {
-      res.json(rows);
+      resourceCreated(res, rows.insertId);
     })
     .catch((error) => {
       logDBError(error);
@@ -81,7 +82,11 @@ router.put('/:id', isLoggedIn, isAdmin, (req, res, next) => {
       const connection = createDBConnection();
       connection.promise().query('UPDATE `Roles` SET role_name = "'+ req.body.role_name+'" WHERE role_id = "'+req.params.id+'"')
       .then(([rows, fields]) => {
-        res.json(rows);
+        if (rows.affectedRows != 0) {
+          resourceUpdated(res, req.params.id);
+        } else {
+          dbNotFound(res, next);
+        }
       })
       .catch((error) => {
         logDBError(error);
@@ -104,7 +109,11 @@ router.delete('/:id', isLoggedIn, isAdmin, (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('DELETE FROM `Roles` WHERE role_id = "'+req.params.id+'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.affectedRows != 0) {
+        resourceDeleted(res, req.params.id);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);

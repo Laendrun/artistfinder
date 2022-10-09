@@ -2,11 +2,12 @@
 
 ## To-Do
 
-- [ ] Take care of sql requests returning 0 rows
+- [x] Take care of sql requests returning 0 rows
   - [x] in the utils, create a DBNotFound function that returns a 404 error
   - For get method check with rows.length
     - [x] done for all get routes (normally, I maybe forgot one or two)
   - For delete method check with affectedRows (maybe post & put too)
+  - For POST method, I did it the same way as the GET method but I'll have to change it 
 - [ ] Update error messages sent from the API
 - [x] Send an error message when there's a problem with the SQL request
   - [x] artists

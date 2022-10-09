@@ -3,6 +3,7 @@ const express = require('express');
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, userSchema } = require('../../../lib/validation.js');
 const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
+const { resourceCreated, resourceUpdated, resourceDeleted } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isAdmin, isOwner, isOwnerOrAdmin } = require('../../../middlewares/');
 
@@ -59,7 +60,7 @@ router.post('/', (req, res, next) => {
     const values = `VALUES (NULL, "${req.body.user_fname}", "${req.body.user_lname}", "${req.body.user_email}", "${req.body.type_id}", "${req.body.role_id}")`
     connection.promise().query('INSERT INTO `Users` (user_id, user_fname, user_lname, user_email, type_id, role_id) '+values)
     .then(([rows, fields]) => {
-      res.json(rows);
+      resourceCreated(res, rows.insertId);
     })
     .catch((error) => {
       logDBError(error);
@@ -81,7 +82,11 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
       const connection = createDBConnection();
       connection.promise().query('UPDATE `Users` SET user_fname = "'+req.body.user_fname+'", user_lname = "'+req.body.user_lname+'", user_email = "'+req.body.user_email+'", type_id = "'+req.body.type_id+'", role_id = "'+req.body.role_id+'" WHERE user_id = "'+req.params.id+'"')
       .then(([rows, fields]) => {
-        res.json(rows);
+        if (rows.affectedRows != 0) {
+          resourceUpdated(res, req.params.id);
+        } else {
+          dbNotFound(res, next);
+        }
       })
       .catch((error) => {
         logDBError(error);
@@ -104,7 +109,11 @@ router.delete('/:id', isLoggedIn, isAdmin, (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('DELETE FROM `Users` WHERE user_id = "'+req.params.id+'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.affectedRows != 0) {
+        resourceDeleted(res, req.params.id);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);

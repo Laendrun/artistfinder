@@ -47,6 +47,30 @@ function dbNotFound(res, next) {
   next(err);
 }
 
+function resourceUpdated(res, udpateId) {
+  res.status(200);
+  res.json({
+    message: "Resource updated.",
+    id: updateId,
+  });
+}
+
+function resourceCreated(res, insertId) {
+  res.status(200);
+  res.json({
+    message: "Resource created.",
+    id: insertId,
+  });
+}
+
+function resourceDeleted(res, deleteId) {
+  res.status(200);
+  res.json({
+    message: "Resource deleted.",
+    id: deleteId,
+  });
+}
+
 module.exports = {
   validationError,
   unauthorized,
@@ -56,4 +80,7 @@ module.exports = {
   deleteError,
   logDBError,
   dbNotFound,
+  resourceUpdated,
+  resourceDeleted,
+  resourceCreated,
 }

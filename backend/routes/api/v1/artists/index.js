@@ -3,6 +3,7 @@ const express = require('express');
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, nameSchema, artistSchema } = require('../../../lib/validation.js');
 const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
+const { resourceCreated, resourceUpdated, resourceDeleted } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isOwnerOrAdmin, isAdmin } = require('../../../middlewares/');
 
@@ -176,11 +177,7 @@ router.post('/', isLoggedIn, (req, res, next) => {
     req.body.isGroup = req.body.isGroup ? 1 : 0;
     connection.promise().query('INSERT INTO `Artists` (`artist_id`, `artist_name`, `artist_isGroup`, `type_id`, `style_id`) '+values)
     .then(([rows, fields]) => {
-      if (rows.length != 0) {
-        res.json(rows);
-      } else {
-        dbNotFound(res, next);
-      }
+      resourceCreated(res, rows.insertId);
     })
     .catch((error) => {
       logDBError(error);
@@ -206,7 +203,11 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
       req.body.isGroup = req.body.isGroup ? 1 : 0;
       connection.promise().query('UPDATE `Artists` SET artist_name = "'+ req.body.artist_name +'", artist_isGroup = "'+ req.body.artist_isGroup +'", type_id = "'+ req.body.type_id +'", style_id = "'+ req.body.style_id +'" WHERE artist_id = "'+ req.params.id+'"')
       .then(([rows, fields]) => {
-        res.json(rows);
+        if (rows.affectedRows != 0) {
+          resourceUpdated(res, req.params.id);
+        } else {
+          dbNotFound(res, next);
+        }
       })
       .catch((error) => {
         logDBError(error);
@@ -228,7 +229,11 @@ router.put('/:id/verify', isLoggedIn, isAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('UPDATE `Artists` SET artist_validated = "1" WHERE artist_id = "'+ req.params.id+'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.affectedRows != 0) {
+        resourceUpdated(res, req.params.id);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -247,7 +252,11 @@ router.put('/:id/unverify', isLoggedIn, isAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('UPDATE `Artists` SET artist_validated = "0" WHERE artist_id = "'+ req.params.id+'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.affectedRows != 0) {
+        resourceUpdated(res, req.params.id);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -268,7 +277,11 @@ router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     connection = createDBConnection();
     connection.promise().query('DELETE FROM `Artists` WHERE artist_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.affectedRows != 0) {
+        resourceDeleted(res, req.params.id);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);

@@ -3,6 +3,7 @@ const express = require('express');
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, dateSchema, nameSchema, reservationSchema } = require('../../../lib/validation.js');
 const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
+const { resourceCreated, resourceUpdated, resourceDeleted } = require('../../../lib/utils.js');
 
 const router = express.Router();
 
@@ -264,7 +265,7 @@ router.post('/', (req, res, next) => {
     const values = `VALUES (NULL, "${req.body.reservation_date}", "${req.body.reservation_time}", "${req.body.place_id}", "${req.body.artist_id}", "${req.body.category_id}")`;
     connection.promise().query('INSERT INTO `Reservations` (`reservation_id`, `reservation_date`, `reservation_time`, `place_id`, `artist_id`, `category_id`) '+values)
     .then(([rows, fields]) => {
-      res.json(rows);
+      resourceCreated(res, rows.insertId);
     })
     .catch((error) => {
       logDBError(error);
@@ -286,7 +287,11 @@ router.put('/:id', (req, res, next) => {
       const connection = createDBConnection();
       connection.promise().query('UPDATE `Reservations` SET reservation_date = "'+req.body.reservation_date+'", reservation_time = "'+req.body.reservation_time+'", place_id = "'+req.body.place_id+'", artist_id = "'+req.body.artist_id+'", category_id = "'+req.body.category_id+'" WHERE reservation_id = "'+ req.params.id +'"')
       .then(([rows, fields]) => {
-        res.json(rows);
+        if (rows.affectedRows != 0) {
+          resourceUpdated(res, req.params.id);
+        } else {
+          dbNotFound(res, next);
+        }
       })
       .catch((error) => {
         logDBError(error);
@@ -309,7 +314,11 @@ router.delete('/:id', (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('DELETE FROM `Reservations` WHERE reservation_id = "'+req.params.id+'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.affectedRows != 0) {
+        resourceDeleted(res, req.params.id);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);

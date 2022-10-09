@@ -3,6 +3,7 @@ const express = require('express');
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, nameSchema, placeSchema, citySchema, post_codeSchema, capacitySchema } = require('../../../lib/validation.js');
 const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
+const { resourceCreated, resourceUpdated, resourceDeleted } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isOwnerOrAdmin } = require('../../../middlewares/');
 
@@ -197,7 +198,11 @@ router.post('/', isLoggedIn, (req, res, next) => {
     let values = `VALUES (NULL, "${req.body.place_name}", "${req.body.place_capacity}", "${req.body.place_address}", "${req.body.place_postCode}", "${req.body.place_city}")`;
     connection.promise().query('INSERT INTO `Places` (`place_id`, `place_name`, `place_capacity`, `place_address`, `place_postCode`, `place_city`) '+values)
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.affectedRows != 0) {
+        resourceCreated(res, rows.insertId);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
@@ -219,7 +224,11 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
       const connection = createDBConnection();
       connection.promise().query('UPDATE `Places` SET place_name = "'+ req.body.place_name +'", place_capacity = "'+ req.body.place_capacity +'", place_address = "'+ req.body.palce_address +'", place_postCode = "'+ req.body.place_postCode +'", place_city = "'+ req.body.place_city +'" WHERE place_id = "'+ req.params.id +'"')
       .then(([rows, fields]) => {
-        res.json(rows);
+        if (rows.affectedRows != 0) {
+          resourceUpdated(res, req.params.id);
+        } else {
+          dbNotFound(res, next);
+        }
       })
       .catch((error) => {
         logDBError(error);
@@ -242,7 +251,11 @@ router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     const connection = createDBConnection();
     connection.promise().query('DELETE FROM `Places` WHERE place_id = "'+ req.params.id +'"')
     .then(([rows, fields]) => {
-      res.json(rows);
+      if (rows.affectedRows != 0) {
+        resourceDeleted(res, req.params.id);
+      } else {
+        dbNotFound(res, next);
+      }
     })
     .catch((error) => {
       logDBError(error);
