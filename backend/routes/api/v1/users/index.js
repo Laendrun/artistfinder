@@ -123,6 +123,29 @@ router.put('/:id/delete', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
   }
 });
 
+// Switch from Google login to email login
+router.put('/:id/switchLogin', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+  const { error } = idSchema.validate({id: req.params.id});
+  if ( error === undefined ) {
+    const connection = createDBConnection();
+    connection.promise().query('UPDATE `Users` SET user_login_type = "0" WHERE user_id = "'+req.params.id+'"')
+    .then(([rows, fields]) => {
+      if (rows.affectedRows != 0) {
+        console.log(req.params.id);
+        resourceUpdated(res, req.params.id);
+      } else {
+        dbNotFound(res, next);
+      }
+    })
+    .catch((error) => {
+      logDBError(error);
+      putError(res, next);
+    });
+  } else {
+    validationError(error, res, next);
+  }
+});
+
 // DELETE Routes
 // DELETE user WHERE user_id = :id
 router.delete('/:id', isLoggedIn, isAdmin, (req, res, next) => {

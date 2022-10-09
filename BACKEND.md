@@ -54,8 +54,8 @@
 - [x] Add a SOFT_DELETE route for the user
   - [x] only the owner or admin can soft_delete a user
 - [ ] admins can reset information of any users (they will only see the username and have access to reset password, email, etc)
-- [ ] Add a route to change connection type (google -> email)
-  - [ ] Only owner or admin can change this
+- [x] Add a route to change connection type (google -> email)
+  - [x] Only owner or admin can change this
 
 ### Middlewares
 

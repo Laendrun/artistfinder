@@ -47,7 +47,7 @@ function dbNotFound(res, next) {
   next(err);
 }
 
-function resourceUpdated(res, udpateId) {
+function resourceUpdated(res, updateId) {
   res.status(200);
   res.json({
     message: "Resource updated.",
