@@ -2,6 +2,7 @@
 
 ## To-Do
 
+- [ ] Make sure all db connections are closed when not used anymore
 - [x] Take care of sql requests returning 0 rows
   - [x] in the utils, create a DBNotFound function that returns a 404 error
   - For get method check with rows.length
@@ -33,7 +34,7 @@
 
 ### Auth Route
 
-- [ ] POST /api/v1/auth/signup
+- [x] POST /api/v1/auth/signup
   - make this route work, for now only Google signup works
 - [ ] POST /api/v1/auth/signin
   - make this route work, for now ony Google signin works

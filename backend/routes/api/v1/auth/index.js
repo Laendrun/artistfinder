@@ -2,10 +2,13 @@
 
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const saltRounds = 12;
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { signupSchema } = require('../../../lib/validation.js');
 const { validationError, getError, postError, logDBError } = require('../../../lib/utils.js');
+const { passwordsMustMatch, usernameExists, emailExists } = require('../../../lib/utils.js');
 
 const router = express.Router();
 
@@ -81,11 +84,71 @@ router.post('/google/', (req, res, next) => {
 });
 
 router.post('/signup/', (req, res, next) => {
-  
   const { error } = signupSchema.validate(req.body);
   if ( error === undefined ) {
-    // insert user in the db
-    res.json(req.body);
+    // check if passwords match
+    if (req.body.user_password != req.body.confirm_password) {
+      passwordsMustMatch(res, next);
+    }
+    const connection = createDBConnection();
+    // check if username already exists
+    connection.promise().query('SELECT user_username FROM `Users` WHERE user_username = "'+req.body.user_username+'"')
+    .then(([rows, fields]) => {
+      if (rows.length != 0) {
+        // if username exists send back an error
+        usernameExists(res, next);
+      } else {
+        // if username does not exist, check if email exists
+        const connection1 = createDBConnection();
+        connection1.promise().query('SELECT user_email FROM `Users` WHERE user_email = "'+req.body.user_email+'"')
+        .then(([rows, fields]) => {
+          if (rows.length != 0 ) {
+            // if email exists send back an error
+            emailExists(res, next);
+          } else {
+            // if email does not exist, hash password
+            bcrypt.hash(req.body.user_password, saltRounds, function(err, hash) {
+              if (error === undefined ) {
+                // if no error hashing the password, save it into the db
+                const connection2 = createDBConnection();
+                connection2.promise().query('INSERT INTO `Passwords` (pass_id, pass_hash) VALUES (NULL, "'+hash+'")')
+                .then(([rows, fields]) => {
+                  // if no error saving the hashed password, save the user
+                  const connection3 = createDBConnection();
+                  const values = `VALUES (NULL, "${req.body.user_fname}", "${req.body.user_lname}", "${req.body.user_username}", "${req.body.user_email}", "${rows.insertId}", "3", "10", "0")`;
+                  connection3.promise().query('INSERT INTO `Users` (user_id, user_fname, user_lname, user_username, user_email, pass_id, type_id, role_id, user_login_type) '+ values)
+                  .then(([rows, fields]) => {
+                    res.json(rows);
+                  })
+                  .catch((error) => {
+                    logDBError(error);
+                    postError(res, next);
+                  })
+                  .then( () => connection3.end());
+                })
+                .catch((error) => {
+                  logDBError(error);
+                  postError(res, next);
+                })
+                .then( () => connection2.end());
+              } else {
+                next(error);
+              }
+            });
+          }
+        })
+        .catch((error) => {
+          logDBError(error);
+          getError(res, next);
+        })
+        .then( () => connection1.end());
+      }
+    })
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
+    .then( () => connection.end());
   } else {
     validationError(error, res, next);
   }

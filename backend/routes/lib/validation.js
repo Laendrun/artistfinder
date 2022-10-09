@@ -98,9 +98,10 @@ const dateSchema = Joi.object({
 const signupSchema = Joi.object({
   user_fname: Joi.string().min(2).max(64).required(),
   user_lname: Joi.string().min(2).max(64).required(),
+  user_username: Joi.string().min(2).max(64).required(),
   user_email: Joi.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).required(),
   user_password: Joi.string().required(),
-  confirm_password:Joi.string().required().valid(Joi.ref('user_password')),
+  confirm_password:Joi.string().required(),
 });
 
 module.exports = {

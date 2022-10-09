@@ -79,6 +79,24 @@ function resourceSoftDeleted(res, softDeleteId) {
   });
 }
 
+function passwordsMustMatch(res, next) {
+  res.status(400);
+  const err = new Error("Passwords must match.");
+  next(err);
+}
+
+function usernameExists(res, next) {
+  res.status(400);
+  const err = new Error("Username already exists.");
+  next(err);
+}
+
+function emailExists(res, next) {
+  res.status(400);
+  const err = new Error("Email already exists.");
+  next(err);
+}
+
 module.exports = {
   validationError,
   unauthorized,
@@ -92,4 +110,7 @@ module.exports = {
   resourceDeleted,
   resourceCreated,
   resourceSoftDeleted,
+  passwordsMustMatch,
+  usernameExists,
+  emailExists,
 }
