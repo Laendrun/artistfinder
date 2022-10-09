@@ -187,66 +187,118 @@ router.post('/signin/', (req, res, next) => {
   const { error } = signinSchema.validate(req.body);
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Users` WHERE user_username = "'+req.body.user_username+'"')
-    .then(([rows, fields]) => {
-      // check if username exists
-      if (rows.length != 0) {
-        // before comparing the passwords, check if user is locked or soft_deleted
-        // if user locked => user locked error
-        // if user soft_deleted => unable to login
-        if ( rows[0].user_blocked || rows[0].user_softDeleted) {
-          if (rows[0].user_blocked) {
-            userBlocked(res, next);
+    if (req.body.user_username) {
+      connection.promise().query('SELECT * FROM `Users` WHERE user_username = "'+req.body.user_username+'"')
+      .then(([rows, fields]) => {
+        // check if username exists
+        if (rows.length != 0) {
+          // before comparing the passwords, check if user is locked or soft_deleted
+          // if user locked => user locked error
+          // if user soft_deleted => unable to login
+          if ( rows[0].user_blocked || rows[0].user_softDeleted) {
+            if (rows[0].user_blocked) {
+              userBlocked(res, next);
+            } else {
+              unableToLogin(res, next);
+            }
           } else {
-            unableToLogin(res, next);
+            // hash password and compare it to the password saved in the db with pass_id
+            const connection1 = createDBConnection();
+            connection1.promise().query('SELECT pass_hash FROM `Passwords` WHERE pass_id = "'+rows[0].pass_id+'"')
+            .then(([pass_rows, fields]) => {
+              bcrypt.compare(req.body.user_password, pass_rows[0].pass_hash, (err, success) => {
+                if (success) {
+                  // send back the JWT
+                  const secret = process.env.JWT_SECRET;
+                  const data = {
+                    user_id: rows[0].user_id,
+                    user_fname: rows[0].user_fname,
+                    user_lname: rows[0].user_lname,
+                    user_username: rows[0].user_username,
+                    artist_id: rows[0].artist_id,
+                    type_id: rows[0].type_id,
+                    role_id: rows[0].role_id,
+                  };
+                  const token = jwt.sign(data, secret);
+                  res.json(token);
+                } else {
+                  unableToLogin(res, next);
+                }
+              });
+            })
+            .catch((error) => {
+              logDBError(error);
+              getError(res, next);
+            })
+            .then( () => connection1.end());
           }
         } else {
-          // hash password and compare it to the password saved in the db with pass_id
-          const connection1 = createDBConnection();
-          connection1.promise().query('SELECT pass_hash FROM `Passwords` WHERE pass_id = "'+rows[0].pass_id+'"')
-          .then(([pass_rows, fields]) => {
-            bcrypt.compare(req.body.user_password, pass_rows[0].pass_hash, (err, success) => {
-              if (success) {
-                // send back the JWT
-                const secret = process.env.JWT_SECRET;
-                const data = {
-                  user_id: rows[0].user_id,
-                  user_fname: rows[0].user_fname,
-                  user_lname: rows[0].user_lname,
-                  user_username: rows[0].user_username,
-                  artist_id: rows[0].artist_id,
-                  type_id: rows[0].type_id,
-                  role_id: rows[0].role_id,
-                };
-                const token = jwt.sign(data, secret);
-                res.json(token);
-              } else {
-                unableToLogin(res, next);
-              }
-            });
-          })
-          .catch((error) => {
-            logDBError(error);
-            getError(res, next);
-          })
-          .then( () => connection1.end());
+          unableToLogin(res, next);
         }
-      } else {
-        unableToLogin(res, next);
-      }
-    })
-    .catch((error) => {
-      logDBError(error);
-      getError(res, next);
-    })
-    .then( () => connection.end());
+      })
+      .catch((error) => {
+        logDBError(error);
+        getError(res, next);
+      })
+      .then( () => connection.end());
+    } else {
+      connection.promise().query('SELECT * FROM `Users` WHERE user_email = "'+req.body.user_email+'"')
+      .then(([rows, fields]) => {
+        // check if email exists
+        if (rows.length != 0) {
+          // before comparing the passwords, check if user is locked or soft_deleted
+          // if user locked => user locked error
+          // if user soft_deleted => unable to login
+          if (rows[0].user_blocked || rows[0].user_softDeleted) {
+            if (rows[0].user_blocked) {
+              userBlocked(res, next);
+            } else {
+              unableToLogin(res, next);
+            }
+          } else {
+            // hash password and compare it to the password saved in the db with pass_id
+            const connection1 = createDBConnection();
+            connection1.promise().query('SELECT pass_hash FROM `Passwords` WHERE pass_id = "'+rows[0].pass_id+'"')
+            .then(([pass_rows, fields]) => {
+              bcrypt.compare(req.body.user_password, pass_rows[0].pass_hash, (err, success) => {
+                if (success) {
+                  // send back the JWT
+                  const secret = process.env.JWT_SECRET;
+                  const data = {
+                    user_id: rows[0].user_id,
+                    user_fname: rows[0].user_fname,
+                    user_lname: rows[0].user_lname,
+                    user_username: rows[0].user_username,
+                    artist_id: rows[0].artist_id,
+                    type_id: rows[0].type_id,
+                    role_id: rows[0].role_id,
+                  };
+                  const token = jwt.sign(data, secret);
+                  res.json(token);
+                } else {
+                  unableToLogin(res, next);
+                }
+              });
+            })
+            .catch((error) => {
+              logDBError(error);
+              getError(res, next);
+            })
+            .then( () => connection1.end());
+          }
+        } else {
+          unableToLogin(res, next);
+        }
+      })
+      .catch((error) => {
+        logDBError(error);
+        getError(res, next);
+      })
+      .then( () => connection.end());
+    }
   } else {
     validationError(error, res, next);
   }
-    // if hashes correspond
-      // send back a token
-    // else
-      // Unable to login.
 });
 
 module.exports = router;

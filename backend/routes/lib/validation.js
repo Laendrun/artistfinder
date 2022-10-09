@@ -105,8 +105,15 @@ const signupSchema = Joi.object({
 });
 
 const signinSchema = Joi.object({
-  user_username: Joi.string().min(2).max(64).required(),
+  user_username: Joi.string().min(2).max(64),
+  user_email: Joi.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/),
   user_password: Joi.string().required(),
+}).xor('user_username', 'user_email');
+
+const changePasswordSchema = Joi.object({
+  user_password: Joi.string().required(),
+  new_password: Joi.string().required(),
+  confirm_password: Joi.string().required(),
 });
 
 module.exports = {
@@ -127,4 +134,5 @@ module.exports = {
   signupSchema,
   signinSchema,
   roleSchema,
+  changePasswordSchema,
 }

@@ -2,6 +2,12 @@
 
 ## To-Do
 
+- [ ] Verify ALL routes, change isOwner by isUser when necessary...
+  - [ ] Modify isOwner to also check if user isOwner of a place
+  - [ ] Modify the DB to be able to store the place id a user is owner of
+- [ ] /!\ change JWT secret
+- [ ] Update password complexity in the validation schema
+- [ ] Try to send clearer validation error message
 - [x] Make sure all db connections are closed when not used anymore
 - [x] Take care of sql requests returning 0 rows
   - [x] in the utils, create a DBNotFound function that returns a 404 error
@@ -40,9 +46,9 @@
   - make this route work, for now only Google signup works
 - [x] POST /api/v1/auth/signin
   - make this route work, for now ony Google signin works
-- [ ] Update /api/v1/auth/signin to accept login via email | username instead of just username
-- [ ] PUT /api/v1/auth/passwordChange
-  - route to update the password 
+- [x] Update /api/v1/auth/signin to accept login via email | username instead of just username
+  - [x] update signin validation schema
+  - [x] update requests
 
 ### Artists route
 
@@ -59,6 +65,8 @@
   - [x] only the owner or admin can soft_delete a user
 - [x] Add a route to change connection type (google -> email)
   - [x] Only owner or admin can change this
+- [ ] PUT /api/v1/users/:id/changePassword
+  - [ ] route to change password
 - [ ] Save the user ID of the user who blocks a user in this user's user_blockedBy field
   - -> check DATABASE.md
 - [ ] Save the user ID of the user who deletes a user in this user's user_deletedBy field

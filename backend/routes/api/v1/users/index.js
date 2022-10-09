@@ -1,8 +1,9 @@
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
-const { idSchema, userSchema } = require('../../../lib/validation.js');
+const { idSchema, userSchema, changePasswordSchema } = require('../../../lib/validation.js');
 const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
+const { passwordsMustMatch } = require('../../../lib/utils.js');
 const { resourceCreated, resourceUpdated, resourceDeleted, resourceSoftDeleted } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isAdmin, isOwner, isOwnerOrAdmin } = require('../../../middlewares/');
@@ -143,6 +144,34 @@ router.put('/:id/switchLogin', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
       putError(res, next);
     })
     .then( () => connection.end());
+  } else {
+    validationError(error, res, next);
+  }
+});
+
+router.put('/:id/changePassword', isLoggedIn, isOwner, (req, res, next) =>{
+  const { error } = idSchema.validate(req.params.id);
+  if ( error === undefined ) {
+    const { error } = changePasswordSchema.validate(req.body);
+    if ( error === undefined ) {
+      if (req.body.new_password != req.body.confirm_password) {
+        passwordsMustMatch(res, next);
+      } else {
+        // passwords match
+        // compare req.body.user_password with password stored in the db
+        const connection = createDBConnection();
+        connection.promise().query('SELECT Passwords.pass_hash FROM `Passwords` INNER JOIN `Users` ON Users.pass_id = Passwords.pass_id WHERE Users.user_id = '+req.params.id+'"')
+        .then(([rows, fields]) => {
+          res.json(rows);
+        })
+        .catch((error) => {
+          logDBError(error);
+          getError(res, next);
+        })
+      }
+    } else {
+      validationError(error, res, next);
+    }
   } else {
     validationError(error, res, next);
   }

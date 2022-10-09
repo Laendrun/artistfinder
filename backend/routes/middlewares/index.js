@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { unauthorized } = require("../lib/utils");
+const { unauthorized, unableToLogin } = require("../lib/utils");
 
 function checkTokenSetUser(req, res, next) {
   // this middleware checks if the Authorization header is set
@@ -44,6 +44,22 @@ function checkTokenSetUser(req, res, next) {
 
   function isOwner(req, res, next) {
     if (req.user.artist_id == req.params.id) {
+      next();
+    } else {
+      unauthorized(res, next);
+    }
+  }
+
+  function isUser(req, res, next) {
+    if (req.user.user_id == req.params.id) {
+      next();
+    } else {
+      unauthorized(res, next);
+    }
+  }
+
+  function isUserOrAdmin(req, res, next) {
+    if (req.user.user_id == req.params.id || req.user.role_id == 9) {
       next();
     } else {
       unauthorized(res, next);

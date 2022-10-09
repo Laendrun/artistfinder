@@ -72,6 +72,9 @@ It'll be easier to check this file instead of searching through the files.
 - POST /api/v1/auth/google/
   - all
 - POST /api/v1/auth/signup/
+  - all
+- POST /api/v1/auth/signin
+  - all
 
 # Categories
 
@@ -237,6 +240,8 @@ It'll be easier to check this file instead of searching through the files.
   - isLoggedIn, isOwnerOrAdmin
 - PUT /api/v1/users/:id/switchLogin
   - isLoggedIn, isOwnerOrAdmin
+- PUT /api/v1/users/:id/changePassword
+  - isLoggedIn, isOwner
 
 - DELETE /api/v1/users/:id
   - isLoggedIn, isAdmin
