@@ -34,6 +34,8 @@
 
 ### Auth Route
 
+- [ ] take care of blocked user at signin
+- [ ] take care of soft deleted user at signin
 - [x] POST /api/v1/auth/signup
   - make this route work, for now only Google signup works
 - [x] POST /api/v1/auth/signin

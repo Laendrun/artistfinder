@@ -28,9 +28,11 @@
 ## Think about
 
 - [ ] Find a way to add multiple roles to a user.
-  - I think the quicker way to do it is to add an array containing all the roles of the user.
-  - \["user", "moderator"\]
-  - Then I can have a function that checks role(s) based on that array.
+  - I will have a "matrix" of roles, each role having the access of all the roles before it plus some others
+  - I think the roles will be these ones :
+    - User -> standard user, basic access to everything needed to use the website
+    - Moderator -> All the user access + access to force a user to change his password at next logon or things like that
+    - Admin -> Full access, this access will only be given to a really limited number of user
 
 Some errors could be more descriptive.
 
