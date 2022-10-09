@@ -71,6 +71,14 @@ function resourceDeleted(res, deleteId) {
   });
 }
 
+function resourceSoftDeleted(res, softDeleteId) {
+  res.status(200);
+  res.json({
+    message: "Resource soft deleted.",
+    id : softDeleteId,
+  });
+}
+
 module.exports = {
   validationError,
   unauthorized,
@@ -83,4 +91,5 @@ module.exports = {
   resourceUpdated,
   resourceDeleted,
   resourceCreated,
+  resourceSoftDeleted,
 }

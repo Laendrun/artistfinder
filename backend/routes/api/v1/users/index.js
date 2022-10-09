@@ -3,7 +3,7 @@ const express = require('express');
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, userSchema } = require('../../../lib/validation.js');
 const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
-const { resourceCreated, resourceUpdated, resourceDeleted } = require('../../../lib/utils.js');
+const { resourceCreated, resourceUpdated, resourceDeleted, resourceSoftDeleted } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isAdmin, isOwner, isOwnerOrAdmin } = require('../../../middlewares/');
 
@@ -13,7 +13,7 @@ const router = express.Router();
 // GET all users
 router.get('/', (req, res, next) => {
   const connection = createDBConnection();
-  connection.promise().query('SELECT user_username FROM `Users`')
+  connection.promise().query('SELECT user_username, user_id FROM `Users`')
   .then(([rows, fields]) => {
     if (rows.length != 0) {
       res.json(rows);
@@ -96,6 +96,28 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     } else {
       validationError(error, res, next);
     }
+  } else {
+    validationError(error, res, next);
+  }
+});
+
+// Soft delete user WHERE user_id = :id
+router.put('/:id/delete', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+  const { error } = idSchema.validate({id: req.params.id});
+  if ( error === undefined ) {
+    const connection = createDBConnection();
+    connection.promise().query('UPDATE `Users` SET user_softDeleted = "1" WHERE user_id = "'+req.params.id+'"')
+    .then(([rows, fields]) => {
+      if (rows.affectedRows != 0) {
+        resourceSoftDeleted(res, req.params.id); // Create resourceSoftDeleted function
+      } else {
+        dbNotFound(res, next);
+      }
+    })
+    .catch((error) => {
+      logDBError(error);
+      putError(res, next);
+    });
   } else {
     validationError(error, res, next);
   }

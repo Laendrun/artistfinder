@@ -233,6 +233,10 @@ It'll be easier to check this file instead of searching through the files.
 
 - PUT /api/v1/users/:id
   - isLoggedIn, isOwnerOrAdmin
+- PUT /api/v1/users/:id/delete
+  - isLoggedIn, isOwnerOrAdmin
+- PUT /api/v1/users/:id/switchLogin
+  - isLoggedIn, isOwnerOrAdmin
 
 - DELETE /api/v1/users/:id
   - isLoggedIn, isAdmin
