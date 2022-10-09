@@ -104,6 +104,11 @@ const signupSchema = Joi.object({
   confirm_password:Joi.string().required(),
 });
 
+const signinSchema = Joi.object({
+  user_username: Joi.string().min(2).max(64).required(),
+  user_password: Joi.string().required(),
+});
+
 module.exports = {
   nameSchema,
   idSchema,
@@ -120,5 +125,6 @@ module.exports = {
   typeSchema,
   userSchema,
   signupSchema,
+  signinSchema,
   roleSchema,
 }

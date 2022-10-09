@@ -36,7 +36,7 @@
 
 - [x] POST /api/v1/auth/signup
   - make this route work, for now only Google signup works
-- [ ] POST /api/v1/auth/signin
+- [x] POST /api/v1/auth/signin
   - make this route work, for now ony Google signin works
 - [ ] PUT /api/v1/auth/passwordChange
   - route to update the password 

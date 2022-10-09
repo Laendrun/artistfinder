@@ -6,8 +6,8 @@ const bcrypt = require('bcryptjs');
 const saltRounds = 12;
 
 const { createDBConnection } = require('../../../lib/db.js');
-const { signupSchema } = require('../../../lib/validation.js');
-const { validationError, getError, postError, logDBError } = require('../../../lib/utils.js');
+const { signupSchema, signinSchema } = require('../../../lib/validation.js');
+const { validationError, getError, postError, logDBError, unableToLogin } = require('../../../lib/utils.js');
 const { passwordsMustMatch, usernameExists, emailExists } = require('../../../lib/utils.js');
 
 const router = express.Router();
@@ -40,6 +40,7 @@ router.post('/google/', (req, res, next) => {
           user_fname: user_fname,
           user_lname: user_lname,
           user_username: user_username,
+          artist_id: null,
           type_id: type_id, 
           role_id: role_id
         }
@@ -60,6 +61,7 @@ router.post('/google/', (req, res, next) => {
           user_id: rows[0].user_id,
           user_fname: rows[0].user_fname,
           user_lname: rows[0].user_lname,
+          user_username: rows[0].user_username,
           artist_id: rows[0].artist_id,
           type_id: rows[0].type_id,
           role_id: rows[0].role_id
@@ -118,7 +120,21 @@ router.post('/signup/', (req, res, next) => {
                   const values = `VALUES (NULL, "${req.body.user_fname}", "${req.body.user_lname}", "${req.body.user_username}", "${req.body.user_email}", "${rows.insertId}", "3", "10", "0")`;
                   connection3.promise().query('INSERT INTO `Users` (user_id, user_fname, user_lname, user_username, user_email, pass_id, type_id, role_id, user_login_type) '+ values)
                   .then(([rows, fields]) => {
-                    res.json(rows);
+                    // when user saved in the db, send back the JWT
+                    const secret = process.env.JWT_SECRET;
+
+                    const data = {
+                      user_id: rows.insertId,
+                      user_fname: req.body.user_fname,
+                      user_lname: req.body.user_lname,
+                      user_username: req.body.user_username,
+                      artist_id: null,
+                      type_id: 3,
+                      role_id: 10,
+                    }
+            
+                    const token = jwt.sign(data, secret);
+                    res.json(token);
                   })
                   .catch((error) => {
                     logDBError(error);
@@ -152,6 +168,61 @@ router.post('/signup/', (req, res, next) => {
   } else {
     validationError(error, res, next);
   }
+});
+
+router.post('/signin/', (req, res, next) => {
+  const { error } = signinSchema.validate(req.body);
+  if ( error === undefined ) {
+    const connection = createDBConnection();
+    connection.promise().query('SELECT * FROM `Users` WHERE user_username = "'+req.body.user_username+'"')
+    .then(([rows, fields]) => {
+      // check if username exists
+      if (rows.length != 0) {
+        // hash password and compare it to the password saved in the db with pass_id
+        const connection1 = createDBConnection();
+        connection1.promise().query('SELECT pass_hash FROM `Passwords` WHERE pass_id = "'+rows[0].pass_id+'"')
+        .then(([pass_rows, fields]) => {
+          bcrypt.compare(req.body.user_password, pass_rows[0].pass_hash, (err, success) => {
+            if (success) {
+              // send back the JWT
+              const secret = process.env.JWT_SECRET;
+              const data = {
+                user_id: rows[0].user_id,
+                user_fname: rows[0].user_fname,
+                user_lname: rows[0].user_lname,
+                user_username: rows[0].user_username,
+                artist_id: rows[0].artist_id,
+                type_id: rows[0].type_id,
+                role_id: rows[0].role_id,
+              };
+              const token = jwt.sign(data, secret);
+              res.json(token);
+            } else {
+              unableToLogin(res, next);
+            }
+          });
+        })
+        .catch((error) => {
+          logDBError(error);
+          getError(res, next);
+        })
+        .then( () => connection1.end());
+      } else {
+        unableToLogin(res, next);
+      }
+    })
+    .catch((error) => {
+      logDBError(error);
+      getError(res, next);
+    })
+    .then( () => connection.end());
+  } else {
+    validationError(error, res, next);
+  }
+    // if hashes correspond
+      // send back a token
+    // else
+      // Unable to login.
 });
 
 module.exports = router;

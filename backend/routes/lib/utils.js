@@ -97,6 +97,12 @@ function emailExists(res, next) {
   next(err);
 }
 
+function unableToLogin(res, next) {
+  res.status(400);
+  const err = new Error("Unable to login.");
+  next(err);
+}
+
 module.exports = {
   validationError,
   unauthorized,
@@ -113,4 +119,5 @@ module.exports = {
   passwordsMustMatch,
   usernameExists,
   emailExists,
+  unableToLogin,
 }
