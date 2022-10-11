@@ -5,7 +5,7 @@ const { reviewSchema, idSchema } = require('../../../lib/validation.js');
 const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
 const { resourceCreated, resourceUpdated, resourceDeleted } = require('../../../lib/utils.js');
 
-const { isLoggedIn, isOwnerOrAdmin } = require('../../../middlewares/');
+const { isLoggedIn, isOwnerOrAdmin, isUserOrAdmin } = require('../../../middlewares/');
 
 const router = express.Router();
 
@@ -120,7 +120,7 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
 // PUT Routes
 // UPDATE review with review_id = :id
-router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+router.put('/:id', isLoggedIn, isUserOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const { error } = reviewSchema.validate(req.body);
@@ -149,7 +149,7 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
 
 // DELETE Routes
 // DELETE review with review_id = :id
-router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+router.delete('/:id', isLoggedIn, isUserOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();

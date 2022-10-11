@@ -1,5 +1,9 @@
 # Artistfinder
 
+## Documentation (Work in Progress)
+
+[docs.artistfinder.world](https://docs.artistfinder.world)
+
 ## Description
 
 > Hello Simon,

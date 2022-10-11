@@ -43,7 +43,7 @@ function checkTokenSetUser(req, res, next) {
   }
 
   function isOwner(req, res, next) {
-    if (req.user.artist_id == req.params.id) {
+    if (req.user.artist_id == req.params.id || req.user.place_id == req.params.id) {
       next();
     } else {
       unauthorized(res, next);
@@ -80,4 +80,6 @@ function checkTokenSetUser(req, res, next) {
     isAdmin,
     isOwner,
     isOwnerOrAdmin,
+    isUser,
+    isUserOrAdmin,
   }

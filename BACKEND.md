@@ -2,9 +2,11 @@
 
 ## To-Do
 
-- [ ] Verify ALL routes, change isOwner by isUser when necessary...
-  - [ ] Modify isOwner to also check if user isOwner of a place
-  - [ ] Modify the DB to be able to store the place id a user is owner of
+- [x] Verify ALL routes, change isOwner by isUser when necessary
+  - [x] Change isOwner by isUser where necessary (Users route) 
+  - [x] Modify isOwner to also check if user isOwner of a place
+  - [x] Modify the DB to be able to store the place id a user is owner of
+  - [x] Modify the token sent back to also send place_id
 - [ ] /!\ change JWT secret
 - [ ] Update password complexity in the validation schema
 - [ ] Try to send clearer validation error message

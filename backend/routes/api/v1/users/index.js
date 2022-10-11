@@ -6,7 +6,7 @@ const { validationError, getError, putError, postError, deleteError, logDBError,
 const { passwordsMustMatch } = require('../../../lib/utils.js');
 const { resourceCreated, resourceUpdated, resourceDeleted, resourceSoftDeleted } = require('../../../lib/utils.js');
 
-const { isLoggedIn, isAdmin, isOwner, isOwnerOrAdmin } = require('../../../middlewares/');
+const { isLoggedIn, isAdmin, isUserOrAdmin, isUser } = require('../../../middlewares/');
 
 const router = express.Router();
 
@@ -30,7 +30,7 @@ router.get('/', (req, res, next) => {
 });
 
 // GET user WHERE user_id = :id
-router.get('/:id', isLoggedIn, isOwner, (req, res, next) => {
+router.get('/:id', isLoggedIn, isUser, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
@@ -75,7 +75,7 @@ router.post('/', (req, res, next) => {
 
 // PUT Routes
 // UPDATE user WHERE user_id = :id
-router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+router.put('/:id', isLoggedIn, isUserOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const { error } = userSchema.validate(req.body);
@@ -103,7 +103,7 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
 });
 
 // Soft delete user WHERE user_id = :id
-router.put('/:id/delete', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+router.put('/:id/delete', isLoggedIn, isUserOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
@@ -126,7 +126,7 @@ router.put('/:id/delete', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
 });
 
 // Switch from Google login to email login
-router.put('/:id/switchLogin', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+router.put('/:id/switchLogin', isLoggedIn, isUserOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
@@ -149,7 +149,7 @@ router.put('/:id/switchLogin', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
   }
 });
 
-router.put('/:id/changePassword', isLoggedIn, isOwner, (req, res, next) =>{
+router.put('/:id/changePassword', isLoggedIn, isUser, (req, res, next) =>{
   const { error } = idSchema.validate(req.params.id);
   if ( error === undefined ) {
     const { error } = changePasswordSchema.validate(req.body);

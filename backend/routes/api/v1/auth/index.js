@@ -42,6 +42,7 @@ router.post('/google/', (req, res, next) => {
           user_lname: user_lname,
           user_username: user_username,
           artist_id: null,
+          place_id: null,
           type_id: type_id, 
           role_id: role_id
         }
@@ -79,7 +80,9 @@ router.post('/google/', (req, res, next) => {
           }
   
           const token = jwt.sign(data, secret);
-          res.json(token);
+          res.json({
+            token: token
+          });
         }
       })
       .catch((error) => {
@@ -142,12 +145,15 @@ router.post('/signup/', (req, res, next) => {
                       user_lname: req.body.user_lname,
                       user_username: req.body.user_username,
                       artist_id: null,
+                      place_id: null,
                       type_id: 3,
                       role_id: 10,
                     }
             
                     const token = jwt.sign(data, secret);
-                    res.json(token);
+                    res.json({
+                      token: token
+                    });
                   })
                   .catch((error) => {
                     logDBError(error);
@@ -216,11 +222,14 @@ router.post('/signin/', (req, res, next) => {
                     user_lname: rows[0].user_lname,
                     user_username: rows[0].user_username,
                     artist_id: rows[0].artist_id,
+                    place_id: rows[0].place_id,
                     type_id: rows[0].type_id,
                     role_id: rows[0].role_id,
                   };
                   const token = jwt.sign(data, secret);
-                  res.json(token);
+                  res.json({
+                    token: token
+                  });
                 } else {
                   unableToLogin(res, next);
                 }
@@ -270,6 +279,7 @@ router.post('/signin/', (req, res, next) => {
                     user_lname: rows[0].user_lname,
                     user_username: rows[0].user_username,
                     artist_id: rows[0].artist_id,
+                    place_id: rows[0].place_id,
                     type_id: rows[0].type_id,
                     role_id: rows[0].role_id,
                   };
