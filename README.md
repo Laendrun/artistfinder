@@ -4,6 +4,19 @@
 
 [docs.artistfinder.world](https://docs.artistfinder.world)
 
+### To-do
+
+- [x] Artists
+- [x] Auth
+- [x] Categories
+- [x] Places
+- [x] Reservations
+- [x] Reviews
+- [ ] Roles
+- [ ] Styles
+- [ ] Types
+- [ ] Users
+
 ## Description
 
 > Hello Simon,
