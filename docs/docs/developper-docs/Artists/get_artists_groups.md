@@ -1,6 +1,6 @@
-# GET api/v1/artists/
+# GET api/v1/artists/groups/
 
-Get all artists (`verified` & `unverified`).
+Get all groups (`verified` & `unverified`).
 
 **This route requires a token that has the Admin role.**
 
@@ -9,7 +9,7 @@ See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to
 ## Request example
 
 ```
-GET https://www.artistfinder.world/api/v1/artists
+GET https://www.artistfinder.world/api/v1/artists/groups/
 ```
 Request Parameters
 ```
@@ -54,7 +54,7 @@ Status: **200**
 
 - "artist_id": int
 - "artist_name": String
-- "artist_isGroup": (boolean) 1 or 0.
+- "artist_isGroup": (boolean) 1.
 - "artist_validated": (boolean) 1 or 0.
 - "type_id": int -> referencing the `Types` table.
 - "style_id": int -> referencing the `Styles` table.

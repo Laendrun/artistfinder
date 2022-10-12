@@ -1,19 +1,19 @@
-# GET api/v1/artists/
+# GET api/v1/artists/name/:name
 
-Get all artists (`verified` & `unverified`).
+Get all artist where `name` is like :name (`verified` & `unverified`).
 
-**This route requires a token that has the Admin role.**
+This route requires a token that has the Admin role.
 
 See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to have a better understanding of what it is. (Not explained yet).
 
 ## Request example
 
 ```
-GET https://www.artistfinder.world/api/v1/artists
+GET https://www.artistfinder.world/api/v1/artists/name/:name
 ```
 Request Parameters
 ```
-No required request parameters.
+name: must be a String.
 ```
 Header:
 ```

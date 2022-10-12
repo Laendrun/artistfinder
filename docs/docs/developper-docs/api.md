@@ -34,3 +34,5 @@ For those of you who didn't understand the picture use the following comparative
 - Redirection (HTTP status codes 3xx) : you'll find them under "Go away"
 - Client error (HTTP status codes 4xx) : you'll find them under "You fucked up"
 - Server error (HTTP status codes 5xx) : you'll find them under "I fucked up"
+
+## Token descriptions
