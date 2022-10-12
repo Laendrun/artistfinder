@@ -1,6 +1,6 @@
-# GET api/v1/artists/
+# GET /api/v1/artists/unverified/notgroups/
 
-Get all artists (`verified` & `unverified`).
+Get all `unverified` not groups.
 
 This route requires a token that has the Admin role.
 
@@ -9,7 +9,7 @@ See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to
 ## Request example
 
 ```
-GET https://www.artistfinder.world/api/v1/artists
+GET https://www.artistfinder.world/api/v1/artists/unverified/groups/
 ```
 Request Parameters
 ```
@@ -23,7 +23,6 @@ Body:
 ```
 No required body.
 ```
-
 ## Header description
 
 The **Authorization** must match the following regexp :
@@ -41,8 +40,8 @@ Status: **200**
 	{
 		"artist_id": 0,
 		"artist_name": "Artist name",
-		"artist_isGroup": 1,
-		"artist_validated": 1,
+		"artist_isGroup": 0,
+		"artist_validated": 0,
 		"type_id": 1,
 		"style_id": 1
 	},
@@ -54,8 +53,8 @@ Status: **200**
 
 - "artist_id": int
 - "artist_name": String
-- "artist_isGroup": (boolean) 1 or 0.
-- "artist_validated": (boolean) 1 or 0.
+- "artist_isGroup": (boolean) 0.
+- "artist_validated": (boolean) 0.
 - "type_id": int -> referencing the `Types` table.
 - "style_id": int -> referencing the `Styles` table.
 
@@ -65,6 +64,12 @@ Status: **404**
 ```json
 {
   "message": "Requested resource not found."
+}
+```
+Status: **401**
+```json
+{
+	"message": "🚫 Unauthorized 🚫"
 }
 ```
 

@@ -29,12 +29,19 @@ Body:
 }
 ```
 
-### Body fields description
+## Body fields description
 
 - **artist_name**: Must be a string of length 4 - 40 characters. (Required)
 - **artist_isGroup**: Must be a boolean (1 | 0). (Required)
 - **type_id**: Must be an int -> referencing the `Types` table. (Required)
 - **style_id**: Must be an Int -> referencing the `Styles` table. (Required)
+
+## Header description
+
+The **Authorization** must match the following regexp :
+```regexp
+/^(Bearer) ([A-Za-z0-9\-\_])+.([A-Za-z0-9\-\_])+.([A-Za-z0-9\-\_])+\w$/
+```
 
 ## Response
 
@@ -54,6 +61,12 @@ Status: **400**
 ```json
 {
   "message": "ValidationError: error description"
+}
+```
+Status: **401**
+```json
+{
+	"message": "🚫 Unauthorized 🚫"
 }
 ```
 

@@ -1,15 +1,11 @@
-# GET api/v1/artists/:id
+# GET api/v1/artists/verified/:id
 
-Get all artist where `id` = :id (`verified` || `unverified`).
-
-This route requires a token that has the Admin role, or the user is the owner of the artist.
-
-See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to have a better understanding of what it is. (Not explained yet).
+Get all `verified` artists where `id` = :id (`verified` || `unverified`).
 
 ## Request example
 
 ```
-GET https://www.artistfinder.world/api/v1/artists/:id
+GET https://www.artistfinder.world/api/v1/artists/verified/:id
 ```
 Request Parameters
 ```
@@ -17,18 +13,11 @@ id: must be an Int being the id of the user.
 ```
 Header:
 ```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoidG9rZW4iLCJpYXQiOjE1MTYyMzkwMjJ9.-1cuKLqVgi9GBF3Si-izWF_fGrP-rm70buOTVzsohAA
+No required header.
 ```
 Body:
 ```
 No required body.
-```
-
-## Header description
-
-The **Authorization** must match the following regexp :
-```regexp
-/^(Bearer) ([A-Za-z0-9\-\_])+.([A-Za-z0-9\-\_])+.([A-Za-z0-9\-\_])+\w$/
 ```
 
 ## Response
@@ -51,10 +40,10 @@ Status: **200**
 
 ### Response fields description
 
-- "artist_id": int
+- "artist_id": :id
 - "artist_name": String
 - "artist_isGroup": (boolean) 1 or 0.
-- "artist_validated": (boolean) 1 or 0.
+- "artist_validated": (boolean) 1.
 - "type_id": int -> referencing the `Types` table.
 - "style_id": int -> referencing the `Styles` table.
 

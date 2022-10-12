@@ -1,6 +1,6 @@
-# GET api/v1/artists/
+# GET /api/v1/artists/unverified/type/:type_id
 
-Get all artists (`verified` & `unverified`).
+Get all `unverified` artists where `type_id` = :type_id.
 
 This route requires a token that has the Admin role.
 
@@ -9,11 +9,11 @@ See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to
 ## Request example
 
 ```
-GET https://www.artistfinder.world/api/v1/artists
+GET https://www.artistfinder.world/api/v1/artists/unverified/type/:type_id
 ```
 Request Parameters
 ```
-No required request parameters.
+type_id: must be an INT referencing the `Types` table.
 ```
 Header:
 ```
@@ -42,8 +42,8 @@ Status: **200**
 		"artist_id": 0,
 		"artist_name": "Artist name",
 		"artist_isGroup": 1,
-		"artist_validated": 1,
-		"type_id": 1,
+		"artist_validated": 0,
+		"type_id": :type_id,
 		"style_id": 1
 	},
   ...
@@ -65,6 +65,12 @@ Status: **404**
 ```json
 {
   "message": "Requested resource not found."
+}
+```
+Status: **401**
+```json
+{
+	"message": "🚫 Unauthorized 🚫"
 }
 ```
 

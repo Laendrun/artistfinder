@@ -67,6 +67,12 @@ Status: **404**
   "message": "Requested resource not found."
 }
 ```
+Status: **401**
+```json
+{
+	"message": "🚫 Unauthorized 🚫"
+}
+```
 
 ### "I fucked up"
 

@@ -1,0 +1,8 @@
+{
+  "label": "Verified artists",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "Verified artists route."
+  }
+}
