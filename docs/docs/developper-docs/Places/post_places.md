@@ -1,19 +1,19 @@
-# PUT /api/v1/artists/:id
+# POST /api/v1/places/
 
-Updates artist where `id` = :id.
+Inserts a new place in the database.
 
-This route requires a token that has the Admin role, or the user is the owner of the artist.
+This route requires the token of any logged in user.
 
 See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to have a better understanding of what it is. (Not explained yet).
 
 ## Request example
 
 ```
-PUT https://www.artistfinder.world/api/v1/artists/:id
+POST https://www.artistfinder.world/api/v1/places/
 ```
 Request Parameters
 ```
-id: must be an Int being the id of the artist.
+No required parameters.
 ```
 Header:
 ```
@@ -21,20 +21,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoidG9rZ
 ```
 Body:
 ```json
-{
-  "artist_name": "Artist name",
-  "artist_isGroup": 1,
-  "type_id": 1,
-  "style_id": 1
-}
+	{
+		"place_name": "Place name",
+		"place_capacity": 100,
+		"place_address": "Place address",
+		"place_postCode": place_postCode,
+		"place_city": "Place city"
+	}
 ```
-
 ## Body fields description
 
-- **artist_name**: Must be a string of length 4 - 40 characters. (Required)
-- **artist_isGroup**: Must be a boolean (1 | 0). (Required)
-- **type_id**: Must be an int -> referencing the `Types` table. (Required)
-- **style_id**: Must be an Int -> referencing the `Styles` table. (Required)
+-	"place_name": String,
+-	"place_capacity": int,
+-	"place_address": String,
+-	"place_postCode": int,
+-	"place_city": String
 
 ## Header description
 
@@ -50,8 +51,8 @@ The **Authorization** must match the following regexp :
 Status: **200**
 ```json
 {
-    "message": "Resource updated.",
-    "id": updateId,
+    "message": "Resource created.",
+    "id": insertId,
 }
 ```
 
@@ -61,12 +62,6 @@ Status: **400**
 ```json
 {
   "message": "ValidationError: error description"
-}
-```
-Status: **404**
-```json
-{
-  "message": "Requested resource not found."
 }
 ```
 Status: **401**
@@ -81,6 +76,6 @@ Status: **401**
 Status: **500**
 ```json
 {
-  "message": "Unable to update data in the database."
+  "message": "Unable to insert data in the database."
 }
 ```
