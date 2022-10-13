@@ -2,7 +2,7 @@
 
 Get all `unverified` groups.
 
-This route requires a token that has the Admin role.
+This route requires a token that has the `Admin` role.
 
 See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to have a better understanding of what it is. (Not explained yet).
 
@@ -11,8 +11,8 @@ See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to
 ```
 GET https://www.artistfinder.world/api/v1/artists/unverified/groups/
 ```
-Request Parameters
-```
+Request Parameters:
+```json
 No required request parameters.
 ```
 Header:
@@ -20,7 +20,7 @@ Header:
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoidG9rZW4iLCJpYXQiOjE1MTYyMzkwMjJ9.-1cuKLqVgi9GBF3Si-izWF_fGrP-rm70buOTVzsohAA
 ```
 Body:
-```
+```json
 No required body.
 ```
 ## Header description
@@ -32,9 +32,8 @@ The **Authorization** must match the following regexp :
 
 ## Response
 
-### "Here you go"
+### Here you go
 
-Status: **200**
 ```json
 [
 	{
@@ -51,14 +50,14 @@ Status: **200**
 
 ### Response fields description
 
-- "artist_id": int
-- "artist_name": String
-- "artist_isGroup": (boolean) 1.
-- "artist_validated": (boolean) 0.
-- "type_id": int -> referencing the `Types` table.
-- "style_id": int -> referencing the `Styles` table.
+- "artist_id": int, (required).
+- "artist_name": String, (required).
+- "artist_isGroup": (boolean) 1, (required).
+- "artist_validated": (boolean) 0, (required).
+- "type_id": int -> referencing the `Types` table, (required).
+- "style_id": int -> referencing the `Styles` table, (required).
 
-### "You fucked up"
+### You fucked up
 
 Status: **404**
 ```json
@@ -73,7 +72,7 @@ Status: **401**
 }
 ```
 
-### "I fucked up"
+### I fucked up
 
 Status: **500**
 ```json

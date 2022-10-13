@@ -1,6 +1,6 @@
 # GET api/v1/artists/
 
-Get all artists (`verified` & `unverified`).
+Get all artists.
 
 This route requires a token that has the Admin role.
 
@@ -11,7 +11,7 @@ See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to
 ```
 GET https://www.artistfinder.world/api/v1/artists
 ```
-Request Parameters
+Request Parameters:
 ```
 No required request parameters.
 ```
@@ -33,7 +33,7 @@ The **Authorization** must match the following regexp :
 
 ## Response
 
-### "Here you go"
+### Here you go
 
 Status: **200**
 ```json
@@ -59,7 +59,7 @@ Status: **200**
 - "type_id": int -> referencing the `Types` table.
 - "style_id": int -> referencing the `Styles` table.
 
-### "You fucked up"
+### You fucked up
 
 Status: **404**
 ```json
@@ -68,7 +68,7 @@ Status: **404**
 }
 ```
 
-### "I fucked up"
+### I fucked up
 
 Status: **500**
 ```json
