@@ -1,29 +1,27 @@
-# POST /api/v1/categories/
+# GET /api/v1/users/:id
 
-Inserts a new category in the database.
+Get user from the database where `user_id` = :id.
 
-This route requires a token that has the Admin role.
+This route requires the token from the user you want to get information from.
 
 See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to have a better understanding of what it is. (Not explained yet).
 
 ## Request example
 
 ```
-POST https://www.artistfinder.world/api/v1/categories/
+GET https://www.artistfinder.world/api/v1/users/:id
 ```
 Request Parameters
 ```
-No required parameters.
+id: must be an Int being the id of the user.
 ```
 Header:
 ```
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoidG9rZW4iLCJpYXQiOjE1MTYyMzkwMjJ9.-1cuKLqVgi9GBF3Si-izWF_fGrP-rm70buOTVzsohAA
 ```
 Body:
-```json
-{
-  "category_name": "Category name"
-}
+```
+No required body.
 ```
 ## Header description
 
@@ -38,10 +36,23 @@ The **Authorization** must match the following regexp :
 
 Status: **200**
 ```json
-{
-  "message":"Resource created.",
-  "id": insertId
-}
+[
+	{
+		"user_id": 1,
+		"user_fname": "Firstname",
+		"user_lname": "Lastname",
+		"user_username": "Username",
+		"user_email": "example@email.com",
+		"pass_id": 1,
+		"type_id": 1,
+		"role_id": 1,
+		"artist_id": null,
+		"place_id": null,
+		"user_login_type": 0,
+		"user_blocked": 0,
+		"user_softDeleted": 0
+	}
+]
 ```
 
 ### "You fucked up"
@@ -58,12 +69,18 @@ Status: **401**
 	"message": "🚫 Unauthorized 🚫"
 }
 ```
+Status: **404**
+```json
+{
+  "message": "Requested resource not found."
+}
+```
 
 ### "I fucked up"
 
 Status: **500**
 ```json
 {
-  "message": "Unable to insert data in the database."
+  "message": "Unable to get data from the database."
 }
 ```

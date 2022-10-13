@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const path = require('path');
 
-const { checkTokenSetUser } = require('./routes/middlewares/checkTokenSetUser.js');
+const { checkTokenSetUser } = require('./routes/middlewares/');
 
 // /API router
 const api = require('./routes/api');

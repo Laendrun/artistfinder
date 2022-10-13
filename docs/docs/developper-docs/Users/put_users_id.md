@@ -1,19 +1,19 @@
-# POST /api/v1/categories/
+# PUT /api/v1/users/:id
 
-Inserts a new category in the database.
+Update a user in the database.
 
-This route requires a token that has the Admin role.
+This route requires a token that has the Admin role or is the token from the User.
 
 See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to have a better understanding of what it is. (Not explained yet).
 
 ## Request example
 
 ```
-POST https://www.artistfinder.world/api/v1/categories/
+PUT https://www.artistfinder.world/api/v1/users/:id
 ```
 Request Parameters
 ```
-No required parameters.
+id: must be an Int being the id of the role.
 ```
 Header:
 ```
@@ -22,7 +22,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoidG9rZ
 Body:
 ```json
 {
-  "category_name": "Category name"
+  "user_fname": "First name",
+  "user_lname": "Last name",
+  "user_username": "Username",
+  "user_email": "email@example.com",
+  "type_id": 1,
+  "role_id": 1
 }
 ```
 ## Header description
@@ -39,8 +44,8 @@ The **Authorization** must match the following regexp :
 Status: **200**
 ```json
 {
-  "message":"Resource created.",
-  "id": insertId
+  "message":"Resource updated.",
+  "id": updateId
 }
 ```
 
@@ -58,12 +63,18 @@ Status: **401**
 	"message": "🚫 Unauthorized 🚫"
 }
 ```
+Status: **404**
+```json
+{
+  "message": "Requested resource not found."
+}
+```
 
 ### "I fucked up"
 
 Status: **500**
 ```json
 {
-  "message": "Unable to insert data in the database."
+  "message": "Unable to update data from the database."
 }
 ```

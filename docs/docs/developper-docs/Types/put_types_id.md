@@ -1,6 +1,6 @@
-# POST /api/v1/categories/
+# PUT /api/v1/types/:id
 
-Inserts a new category in the database.
+Update a types in the database.
 
 This route requires a token that has the Admin role.
 
@@ -9,11 +9,11 @@ See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to
 ## Request example
 
 ```
-POST https://www.artistfinder.world/api/v1/categories/
+PUT https://www.artistfinder.world/api/v1/types/:id
 ```
 Request Parameters
 ```
-No required parameters.
+id: must be an Int being the id of the role.
 ```
 Header:
 ```
@@ -22,7 +22,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoidG9rZ
 Body:
 ```json
 {
-  "category_name": "Category name"
+  "style_name": "Type name"
 }
 ```
 ## Header description
@@ -39,8 +39,8 @@ The **Authorization** must match the following regexp :
 Status: **200**
 ```json
 {
-  "message":"Resource created.",
-  "id": insertId
+  "message":"Resource updated.",
+  "id": updateId
 }
 ```
 
@@ -58,12 +58,18 @@ Status: **401**
 	"message": "🚫 Unauthorized 🚫"
 }
 ```
+Status: **404**
+```json
+{
+  "message": "Requested resource not found."
+}
+```
 
 ### "I fucked up"
 
 Status: **500**
 ```json
 {
-  "message": "Unable to insert data in the database."
+  "message": "Unable to update data from the database."
 }
 ```

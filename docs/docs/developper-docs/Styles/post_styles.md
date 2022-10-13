@@ -1,6 +1,6 @@
-# POST /api/v1/categories/
+# POST /api/v1/styles/
 
-Inserts a new category in the database.
+Inserts a new style in the database.
 
 This route requires a token that has the Admin role.
 
@@ -9,7 +9,7 @@ See the [API Intro](https://docs.artistfinder.world/developper-docs/api) page to
 ## Request example
 
 ```
-POST https://www.artistfinder.world/api/v1/categories/
+POST https://www.artistfinder.world/api/v1/styles/
 ```
 Request Parameters
 ```
@@ -22,7 +22,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoidG9rZ
 Body:
 ```json
 {
-  "category_name": "Category name"
+  "style_name": "Style name"
 }
 ```
 ## Header description

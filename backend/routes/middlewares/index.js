@@ -52,6 +52,7 @@ function checkTokenSetUser(req, res, next) {
 
   function isUser(req, res, next) {
     if (req.user.user_id == req.params.id) {
+      console.log(req.user.user_id);
       next();
     } else {
       unauthorized(res, next);

@@ -52,27 +52,6 @@ router.get('/:id', isLoggedIn, isUser, (req, res, next) => {
   }
 });
 
-// POST Routes
-// INSERT new user
-router.post('/', (req, res, next) => {
-  const { error } = userSchema.validate(req.body);
-  if ( error === undefined ) {
-    const connection = createDBConnection();
-    const values = `VALUES (NULL, "${req.body.user_fname}", "${req.body.user_lname}", "${req.body.user_email}", "${req.body.type_id}", "${req.body.role_id}")`
-    connection.promise().query('INSERT INTO `Users` (user_id, user_fname, user_lname, user_email, type_id, role_id) '+values)
-    .then(([rows, fields]) => {
-      resourceCreated(res, rows.insertId);
-    })
-    .catch((error) => {
-      logDBError(error);
-      postError(res, next);
-    })
-    .then( () => connection.end());
-  } else {
-    validationError(error, res, next);
-  } 
-});
-
 // PUT Routes
 // UPDATE user WHERE user_id = :id
 router.put('/:id', isLoggedIn, isUserOrAdmin, (req, res, next) => {
@@ -110,7 +89,7 @@ router.put('/:id/delete', isLoggedIn, isUserOrAdmin, (req, res, next) => {
     connection.promise().query('UPDATE `Users` SET user_softDeleted = "1" WHERE user_id = "'+req.params.id+'"')
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {
-        resourceSoftDeleted(res, req.params.id); // Create resourceSoftDeleted function
+        resourceSoftDeleted(res, req.params.id);
       } else {
         dbNotFound(res, next);
       }
