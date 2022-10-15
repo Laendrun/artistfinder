@@ -4,7 +4,7 @@ const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, userSchema, changePasswordSchema } = require('../../../lib/validation.js');
 const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
 const { passwordsMustMatch } = require('../../../lib/utils.js');
-const { resourceCreated, resourceUpdated, resourceDeleted, resourceSoftDeleted } = require('../../../lib/utils.js');
+const { resourceUpdated, resourceDeleted, resourceSoftDeleted } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isAdmin, isUserOrAdmin, isUser } = require('../../../middlewares/');
 
@@ -27,6 +27,18 @@ router.get('/', (req, res, next) => {
     getError(res, next);
   })
   .then( () => connection.end());
+});
+
+router.get('/infos', isLoggedIn, (req, res, next) => {
+  res.json({
+    "user_id": req.user.user_id,
+    "user_fname": req.user.user_fname,
+    "user_lname": req.user.user_lname,
+    "user_username": req.user.user_username,
+    "artist_id": req.user.artist_id,
+    "type_id": req.user.type_id,
+    "role_id": req.user.role_id,
+  })
 });
 
 // GET user WHERE user_id = :id

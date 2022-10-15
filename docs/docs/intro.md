@@ -21,7 +21,7 @@ Whether you're a musician, a photograph, a painter, we want you to be able to sh
 
 We don't want these kind of platform to be available only to DJs.
 
-## How did it started ?
+## How did it start ?
 
 I (Simon) received a message from an old work colleague asking me if I could help him on a project.
 
