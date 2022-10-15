@@ -12,6 +12,7 @@
     .then(res => res.json())
     .then(data => {
       window.localStorage.setItem('Authorization', data.token);
+      window.location.replace('https://www.artistfinder.world/profile')
     });
   }
 </script>

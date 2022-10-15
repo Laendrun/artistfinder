@@ -2,28 +2,25 @@
   import { onMounted } from 'vue'
 
   onMounted(() => {
-    document.title = 'Acceuil'
+    document.title = 'Accueil'
   })
 </script>
 
 <script>
 // @ is an alias to /src
-import Navbar from '@/components/Navbar.vue'
-import HelloWorld from '@/components/HelloWorld.vue'
+import HomeDescription from '@/components/HomeDescription.vue'
 
 export default {
   name: 'HomeView',
   components: {
-    HelloWorld,
-    Navbar
+    HomeDescription,
   }
 }
 </script>
 
 <template>
   <div class="homeView">
-    <Navbar />
-    <HelloWorld title="Artistfinder" />
+    <HomeDescription />
   </div>
 </template>
 

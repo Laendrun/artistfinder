@@ -35,6 +35,7 @@ router.get('/infos', isLoggedIn, (req, res, next) => {
     "user_fname": req.user.user_fname,
     "user_lname": req.user.user_lname,
     "user_username": req.user.user_username,
+    "user_email": req.user.user_email,
     "artist_id": req.user.artist_id,
     "type_id": req.user.type_id,
     "role_id": req.user.role_id,

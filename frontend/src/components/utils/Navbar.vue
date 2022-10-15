@@ -9,7 +9,7 @@
     <div class="collapse navbar-collapse" id="mainNav">
       <RouterLink to="/signin" class="nav-link nav-router-link">Connexion</RouterLink>
       <RouterLink to="/about" class="nav-link nav-router-link">À propos</RouterLink>
-      <RouterLink to="/test" class="nav-link nav-router-link">Test</RouterLink>
+      <RouterLink to="/profile" class="nav-link nav-router-link"><font-awesome-icon icon="fa-regular fa-user" /></RouterLink>
     </div>
   </nav>  
 </div>
@@ -27,8 +27,12 @@
   }
 </style>
 
-<script>
+<script setup>
+  const ls = localStorage.getItem('Authorization');
 
+</script>
+
+<script>
 export default {
   name: 'Navbar',
 }

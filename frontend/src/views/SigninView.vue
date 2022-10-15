@@ -8,21 +8,21 @@ onMounted(() => {
 
 <script>
 // @ is an alias to /src
-import Navbar from '@/components/Navbar.vue'
 import SigninForm from '@/components/SigninForm.vue'
+import GoogleSignin from '@/components/auth/GoogleSignin.vue'
 
 export default {
   name: 'SigninView',
   components: {
     SigninForm,
-    Navbar
+    GoogleSignin
   }
 }
 </script>
 
 <template>
-  <Navbar />
   <div class="container">
     <SigninForm />
+    <GoogleSignin />
   </div>
 </template>

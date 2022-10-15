@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AboutView from '@/views/AboutView.vue'
 import HomeView from '@/views/HomeView.vue'
 import SigninView from '@/views/SigninView.vue'
-import TestView from '@/views/TestView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 const routes = [
   {
@@ -18,12 +18,36 @@ const routes = [
   {
     path: '/signin',
     name: 'signin',
-    component: SigninView
+    component: SigninView,
+    beforeEnter: (to, from, next) => {
+      let isLoggedIn = true;
+      if (localStorage.getItem('Authorization') === null) {
+        isLoggedIn = false;
+      }
+      
+      if (!isLoggedIn) {
+        next();
+      } else {
+        next({path: '/profile'})
+      }
+    }
   },
   {
-    path: '/test',
-    name: 'test',
-    component: TestView
+    path: '/profile',
+    name: 'profile',
+    component: ProfileView,
+    beforeEnter: (to, from, next) => {
+      let isLoggedIn = true;
+      if (localStorage.getItem('Authorization') === null) {
+        isLoggedIn = false;
+      }
+      
+      if (isLoggedIn) {
+        next();
+      } else {
+        next({path: '/signin'})
+      }
+    }
   }
 ]
 
