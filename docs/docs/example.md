@@ -1,3 +1,6 @@
+This route is not used, it is a temporary file.
+
+
 # METHOD url
 
 Route description `field`.
@@ -19,6 +22,7 @@ Request parameters:
 No required parameters.
 OR
 id: has to be a `int` being the id of the requested resource.
+name: has to be a `string`.
 ```
 Header:
 ```json
