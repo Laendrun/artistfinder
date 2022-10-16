@@ -7,9 +7,13 @@
     </button>
   
     <div class="collapse navbar-collapse" id="mainNav">
-      <RouterLink to="/signin" class="nav-link nav-router-link">Connexion</RouterLink>
-      <RouterLink to="/about" class="nav-link nav-router-link">À propos</RouterLink>
-      <RouterLink to="/profile" class="nav-link nav-router-link"><font-awesome-icon icon="fa-regular fa-user" /></RouterLink>
+      <RouterLink to="/artists" class="nav-link nav-router-link">Artistes</RouterLink>
+      <RouterLink to="/profile" class="nav-link nav-router-link">
+        <font-awesome-icon icon="fa-regular fa-user" />
+      </RouterLink>
+      <div v-if="isLoggedIn" @click="logout" id="logout-icon" class="nav-link nav-router-link">
+        <font-awesome-icon icon="fa-solid fa-right-from-bracket" />
+      </div>
     </div>
   </nav>  
 </div>
@@ -25,10 +29,22 @@
     margin-left: 1vh;
     margin-right: 1vh;
   }
+  #logout-icon {
+    cursor: pointer;
+  }
 </style>
 
 <script setup>
-  const ls = localStorage.getItem('Authorization');
+  const ls = localStorage.getItem('Authorization')
+  let isLoggedIn = false
+  if (ls) {
+    isLoggedIn = true
+  }
+
+const logout = () => {
+  localStorage.removeItem('Authorization');
+  window.location.replace('https://www.artistfinder.world/')
+}
 
 </script>
 

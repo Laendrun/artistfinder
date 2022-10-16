@@ -6,7 +6,9 @@
 
 <template>
   <Navbar />
-  <router-view />
+  <Suspense>
+    <router-view />
+  </Suspense>
   <Footer />
 </template>
 

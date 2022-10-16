@@ -8,7 +8,7 @@ onMounted(() => {
 
 <script>
 // @ is an alias to /src
-import SigninForm from '@/components/SigninForm.vue'
+import SigninForm from '@/components/auth/SigninForm.vue'
 import GoogleSignin from '@/components/auth/GoogleSignin.vue'
 
 export default {

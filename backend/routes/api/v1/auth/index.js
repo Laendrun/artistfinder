@@ -45,7 +45,8 @@ router.post('/google/', (req, res, next) => {
           artist_id: null,
           place_id: null,
           type_id: type_id, 
-          role_id: role_id
+          role_id: role_id,
+          login_type: user_login_type
         }
 
         const token = jwt.sign(data, secret);
@@ -75,9 +76,11 @@ router.post('/google/', (req, res, next) => {
             user_fname: rows[0].user_fname,
             user_lname: rows[0].user_lname,
             user_username: rows[0].user_username,
+            user_email: rows[0].user_email,
             artist_id: rows[0].artist_id,
             type_id: rows[0].type_id,
-            role_id: rows[0].role_id
+            role_id: rows[0].role_id,
+            login_type: rows[0].user_login_type
           }
   
           const token = jwt.sign(data, secret);
@@ -150,6 +153,7 @@ router.post('/signup/', (req, res, next) => {
                       place_id: null,
                       type_id: 3,
                       role_id: 10,
+                      login_type: 0
                     }
             
                     const token = jwt.sign(data, secret);
@@ -228,6 +232,7 @@ router.post('/signin/', (req, res, next) => {
                     place_id: rows[0].place_id,
                     type_id: rows[0].type_id,
                     role_id: rows[0].role_id,
+                    login_type: rows[0].user_login_type
                   };
                   const token = jwt.sign(data, secret);
                   res.json({
@@ -286,6 +291,7 @@ router.post('/signin/', (req, res, next) => {
                     place_id: rows[0].place_id,
                     type_id: rows[0].type_id,
                     role_id: rows[0].role_id,
+                    login_type: rows[0].user_login_type
                   };
                   const token = jwt.sign(data, secret);
                   res.json(token);

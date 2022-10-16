@@ -65,6 +65,12 @@ const userSchema = Joi.object({
   role_id: Joi.number().required()
 });
 
+const userUpdateSchema = Joi.object({
+  user_fname: Joi.string().min(2).max(64).required(),
+  user_lname: Joi.string().min(2).max(64).required(),
+  user_username: Joi.string().min(2).max(64).required(),
+  user_email: Joi.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).required(),
+});
 // post_code validation schema
 const post_codeSchema = Joi.object({
   post_code: Joi.number().required()
@@ -131,6 +137,7 @@ module.exports = {
   styleSchema,
   typeSchema,
   userSchema,
+  userUpdateSchema,
   signupSchema,
   signinSchema,
   roleSchema,

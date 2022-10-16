@@ -10,7 +10,7 @@ const router = express.Router();
 // GET all artists
 router.get('/', (req, res, next) => {
   const connection = createDBConnection();
-  connection.promise().query('SELECT * FROM `Artists` WHERE `artist_validated` = "1"')
+  connection.promise().query('SELECT * FROM `Artists` INNER JOIN `Styles` ON Artists.style_id = Styles.style_id INNER JOIN `Types` ON Artists.type_id = Types.type_id WHERE `artist_validated` = "1"')
   .then(([rows, field]) => {
     if (rows.length != 0) {
       res.json(rows);

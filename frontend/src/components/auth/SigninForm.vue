@@ -21,8 +21,20 @@
       })
       .then(res => res.json())
       .then(data => {
-        window.localStorage.setItem('Authorization', data.token);
-        window.location.replace('https://www.artistfinder.world/profile')
+        if (data.status == 400) {
+          error.innerText = "Impossible de se connecter"
+          setTimeout(() => {
+            error.innerText = ''
+          }, 5000);
+        } else if (data.status == 500) {
+          error.innerText = 'Erreur serveur'
+          setTimeout(() => {
+            error.innerText = ''
+          }, 5000);
+        } else {
+          window.localStorage.setItem('Authorization', data.token);
+          window.location.replace('https://www.artistfinder.world/profile')
+        }
       });
     }
 
@@ -30,11 +42,6 @@
 </script>
 
 <script>
-
-  //const user_username = document.getElementById('username');
-  //const user_password = document.getElementById('password');
-  //console.log('Username : ', user_username);
-  //console.log('Password : ', user_password);
 
 export default {
   name: 'SigninForm',
