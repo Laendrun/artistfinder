@@ -28,23 +28,20 @@
 <template>
   <div class="artistsView">
     <div class="container">
-      <div class="row" id="test">
+      <div class="row" id="artistsCards">
         <ArtistListCard v-for="(artist, i) in artists" class="artistCard" :artist="artist" />
       </div>
-        
     </div>
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
   .artistCard {
-    margin-bottom: 3vh;
+      margin-bottom: 3vh;
   }
-</style>
 
-<style lang="scss">
-  @import "../../node_modules/bootstrap/scss/bootstrap";
-  #test {
+    @import "../../node_modules/bootstrap/scss/bootstrap";
+  #artistsCards {
     @include row-cols(1);
     @include media-breakpoint-up(md) {
       @include row-cols(2);

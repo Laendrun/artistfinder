@@ -15,7 +15,11 @@ const router = express.Router();
 // GET all users
 router.get('/', (req, res, next) => {
   const connection = createDBConnection();
-  connection.promise().query('SELECT user_username, user_id FROM `Users`')
+  let select = 'user_username, user_id'
+  if (req.user && req.user.role_id == 9){
+    select = '*';
+  }
+  connection.promise().query('SELECT '+ select +' FROM `Users`')
   .then(([rows, fields]) => {
     if (rows.length != 0) {
       res.json(rows);
@@ -132,6 +136,91 @@ router.put('/:id', isLoggedIn, isUserOrAdmin, (req, res, next) => {
     } else {
       validationError(error, res, next);
     }
+  } else {
+    validationError(error, res, next);
+  }
+});
+
+router.put('/:id/admin', isLoggedIn, isAdmin, (req, res, next) => {
+  const { error } = idSchema.validate({id: req.params.id});
+  if ( error === undefined ) {
+    const connection = createDBConnection();
+    connection.promise().query('UPDATE `Users` SET role_id = "9" WHERE user_id = "'+ req.params.id +'"')
+    .then(([rows, fields]) => {
+      res.json({
+        type: `success`,
+        message: `Successfully update user ${req.params.id}`
+      })
+    })
+    .catch((error) => {
+      logDBError(error);
+      putError(res, next);
+    })
+    .then(() => connection.end());
+  } else {
+    validationError(error, res, next);
+  }
+});
+
+router.put('/:id/user', isLoggedIn, isAdmin, (req, res, next) => {
+  const { error } = idSchema.validate({id: req.params.id});
+  if ( error === undefined ) {
+    const connection = createDBConnection();
+    connection.promise().query('UPDATE `Users` SET role_id = "10" WHERE user_id = "'+ req.params.id +'"')
+    .then(([rows, fields]) => {
+      console.log(rows.affectedRows)
+      res.json({
+        type: `success`,
+        message: `Successfully update user ${req.params.id}`
+      })
+    })
+    .catch((error) => {
+      logDBError(error);
+      putError(res, next);
+    })
+    .then(() => connection.end());
+  } else {
+    validationError(error, res, next);
+  }
+});
+
+router.put('/:id/block', isLoggedIn, isAdmin, (req, res, next) => {
+  const { error } = idSchema.validate({id: req.params.id});
+  if ( error === undefined ) {
+    const connection = createDBConnection();
+    connection.promise().query('UPDATE `Users` SET user_blocked = "1" WHERE user_id = "'+ req.params.id +'"')
+    .then(([rows, fields]) => {
+      res.json({
+        type: `success`,
+        message: `Successfully update user ${req.params.id}`
+      })
+    })
+    .catch((error) => {
+      logDBError(error);
+      putError(res, next);
+    })
+    .then(() => connection.end());
+  } else {
+    validationError(error, res, next);
+  }
+});
+
+router.put('/:id/unblock', isLoggedIn, isAdmin, (req, res, next) => {
+  const { error } = idSchema.validate({id: req.params.id});
+  if ( error === undefined ) {
+    const connection = createDBConnection();
+    connection.promise().query('UPDATE `Users` SET user_blocked = "0" WHERE user_id = "'+ req.params.id +'"')
+    .then(([rows, fields]) => {
+      res.json({
+        type: `success`,
+        message: `Successfully update user ${req.params.id}`
+      })
+    })
+    .catch((error) => {
+      logDBError(error);
+      putError(res, next);
+    })
+    .then(() => connection.end());
   } else {
     validationError(error, res, next);
   }
