@@ -200,7 +200,7 @@ router.post('/signin/', (req, res, next) => {
   if ( error === undefined ) {
     const connection = createDBConnection();
     if (req.body.user_username) {
-      connection.promise().query('SELECT * FROM `Users` WHERE user_username = "'+req.body.user_username+'"')
+      connection.promise().query('SELECT * FROM `Users` WHERE user_username = "'+req.body.user_username+'" AND user_login_type = "0"')
       .then(([rows, fields]) => {
         // check if username exists
         if (rows.length != 0) {

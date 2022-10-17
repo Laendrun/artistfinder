@@ -2,7 +2,23 @@
 
   const emit = defineEmits(['userUpdated'])
 
-  const updateUser = () => {
+  const getData = async() => {
+  let userData = await fetch('https://api.artistfinder.world/api/v1/users/infos', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('Authorization')}`,
+      }
+    });
+    let userJson = await userData.json();
+    return userJson;
+  }
+
+  async function updated() {
+    const dat = await getData();
+    return dat;
+  }
+
+  const updateUser = async () => {
     const user_id = document.getElementById('data0').innerText;
     const username = document.getElementById('data3').value;
     const fname = document.getElementById('data2').value;
@@ -24,26 +40,35 @@
       },
       body: JSON.stringify(body)
     })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status) {
-          if (data.status == 400) {
-            document.getElementById('error').innerText = 'Nom d\'utilisateur indisponible.'
+    .then(res => res.json())
+    .then(data => {
+      if (data.status) {
+        if (data.status == 400) {
+          console.log(data.message)
+          if (data.message.includes("user_email")) {
+            document.getElementById('modalerror').innerText = 'Adresse email incorrecte / indisponible.'
           } else {
-            document.getElementById('error').innerText = 'Une erreur s\'est produite lors de la mise à jour de l\'utilisateur.';
+            document.getElementById('modalerror').innerText = 'Nom d\'utilisateur indisponible.'
           }
-          setTimeout(() => {
-            document.getElementById('error').innerText = ''
-          }, 1000)
         } else {
-          emit('userUpdated');
-          document.getElementById('success').innerText = 'Utilisateur mis à jour.'
-          localStorage.setItem('Authorization', data.token)
-          setTimeout(() => {
-            document.getElementById('success').innerText = ''
-          }, 1000)
+          document.getElementById('modalerror').innerText = 'Une erreur s\'est produite lors de la mise à jour de l\'utilisateur.';
         }
-      });
+        setTimeout(() => {
+          document.getElementById('modalerror').innerText = ''
+        }, 2500)
+      } else {
+        emit('userUpdated');
+        document.getElementById('modalsuccess').innerText = 'Utilisateur mis à jour.'
+        localStorage.setItem('Authorization', data.token)
+        document.getElementById('lnameLabel').innerText = `Nom : ${body.user_lname}`
+        document.getElementById('fnameLabel').innerText = `Prénom : ${body.user_fname}`
+        document.getElementById('emailLabel').innerText = `Email : ${body.user_email}`
+        document.getElementById('usernameLabel').innerText = `Nom d'utilisateur : ${body.user_username}`
+        setTimeout(() => {
+          document.getElementById('modalsuccess').innerText = ''
+        }, 2500)
+      }
+    });
   }
 </script>
 
@@ -71,6 +96,8 @@ export default {
           </div>
           <div class="modal-body">
             <div class="row justify-content-center">
+              <div id="modalerror"></div>
+              <div id="modalsuccess"></div>
               <form @submit.prevent class="col-md-6 col-sm-10">
               <!-- Lname input -->
               <div class="form-outline mb-4">
@@ -101,7 +128,7 @@ export default {
           </div>
           <div class="modal-footer">
             <button type="button" class="btn" data-bs-dismiss="modal">Annuler</button>
-            <button @click="updateUser" data-bs-dismiss="modal" type="button" class="btn">Enregistrer</button>
+            <button @click="updateUser" type="button" class="btn">Enregistrer</button>
           </div>
         </div>
       </div>
@@ -109,4 +136,8 @@ export default {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#modalerror {
+  color: red;
+}
+</style>

@@ -27,6 +27,7 @@
             error.innerText = ''
           }, 5000);
         } else if (data.status == 500) {
+          console.log(data.message)
           error.innerText = 'Erreur serveur'
           setTimeout(() => {
             error.innerText = ''
@@ -73,6 +74,7 @@ export default {
 </template>
 
 <style scope>
+
   #error {
     color: red;
   }

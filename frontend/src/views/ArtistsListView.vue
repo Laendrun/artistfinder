@@ -10,8 +10,6 @@
   }
 
   const artists = await getData()
-  console.log(artists)
-
   onMounted(() => {
     document.title = 'Artistes'
   })
@@ -30,7 +28,7 @@
 <template>
   <div class="artistsView">
     <div class="container">
-      <div class="row">
+      <div class="row" id="test">
         <ArtistListCard v-for="(artist, i) in artists" class="artistCard" :artist="artist" />
       </div>
         
@@ -41,5 +39,18 @@
 <style scoped>
   .artistCard {
     margin-bottom: 3vh;
+  }
+</style>
+
+<style lang="scss">
+  @import "../../node_modules/bootstrap/scss/bootstrap";
+  #test {
+    @include row-cols(1);
+    @include media-breakpoint-up(md) {
+      @include row-cols(2);
+    }
+    @include media-breakpoint-up(lg) {
+      @include row-cols(3)
+    }
   }
 </style>

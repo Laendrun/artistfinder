@@ -7,13 +7,14 @@ import vue3GoogleLogin from 'vue3-google-login'
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faGithub, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons"
-import { faHeart, faRightFromBracket, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faRightFromBracket, faPen, faUserSecret } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(faGithub)
 library.add(faHeart)
 library.add(faInstagram)
 library.add(faUser)
+library.add(faUserSecret)
 library.add(faRightFromBracket)
 library.add(faPen)
 

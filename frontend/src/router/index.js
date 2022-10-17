@@ -4,6 +4,7 @@ import HomeView from '@/views/HomeView.vue'
 import SigninView from '@/views/SigninView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import AdminView from '@/views/AdminView.vue'
+import SignupView from '@/views/SignupView.vue'
 
 const routes = [
   {
@@ -15,6 +16,11 @@ const routes = [
     path: '/artists',
     name: 'artists',
     component: ArtistsListView
+  },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: SignupView
   },
   {
     path: '/signin',
