@@ -9,7 +9,7 @@ import { faGithub, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons"
 import { faHeart, faRightFromBracket, faPen, faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan, faBan, faUserTie, faUserPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { faUserXmark, faUserSlash } from '@fortawesome/free-solid-svg-icons'
+import { faUserXmark, faUserSlash, faShuffle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(faGithub)
@@ -27,6 +27,7 @@ library.add(faArrowDown)
 library.add(faTrashCan)
 library.add(faBan)
 library.add(faCheck)
+library.add(faShuffle)
 
 const app = createApp(App).component("font-awesome-icon", FontAwesomeIcon);
 app.use(router);

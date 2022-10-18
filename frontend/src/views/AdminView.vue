@@ -39,7 +39,7 @@ export default {
     <div class="container">
       <!--<AdminInfo />-->
       <div class="row" id="usersCards">
-        <UserListCard v-for="user in users" class="userCard" @userUpdated="updated" :user="user" />
+        <UserListCard v-for="user in users" class="userCard" @userUpdated="updated" :user_prop="user" />
       </div>
     </div>
   </div>

@@ -41,6 +41,11 @@ function logDBError(error) {
   console.error(error.sql);
 }
 
+function logBcryptError(error) {
+  console.error(new Date());
+  console.error(error);
+}
+
 function dbNotFound(res, next) {
   res.status(404);
   const err = new Error('Requested resource not found.');
@@ -109,6 +114,12 @@ function userBlocked(res, next) {
   next(err);
 }
 
+function incorrectPassword(res, next) {
+  res.status(400);
+  const err = new Error("Incorrect password.");
+  next(err);
+}
+
 module.exports = {
   validationError,
   unauthorized,
@@ -117,6 +128,7 @@ module.exports = {
   postError,
   deleteError,
   logDBError,
+  logBcryptError,
   dbNotFound,
   resourceUpdated,
   resourceDeleted,
@@ -127,4 +139,5 @@ module.exports = {
   emailExists,
   unableToLogin,
   userBlocked,
+  incorrectPassword,
 }

@@ -8,6 +8,10 @@
   - [x] Modify the DB to be able to store the place id a user is owner of
   - [x] Modify the token sent back to also send place_id
 - [ ] /!\ change JWT secret
+- [ ] /!\ add an env variable for the admin role id
+- [ ] /!\ add an env variable for the user role id
+- [ ] /!\ add an env variable for the moderator role id
+- [ ] Check all routes and middlewares, change the different ids by process.env.USER_ID | process.env.ADMIN_ID | process.env.MOD_ID
 - [ ] Update password complexity in the validation schema
 - [ ] Try to send clearer validation error message
 - [x] Make sure all db connections are closed when not used anymore

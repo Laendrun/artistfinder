@@ -1,10 +1,12 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const saltRounds = 12;
 
 const { createDBConnection } = require('../../../lib/db.js');
 const { idSchema, changePasswordSchema, userUpdateSchema } = require('../../../lib/validation.js');
-const { validationError, getError, putError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
-const { passwordsMustMatch, usernameExists } = require('../../../lib/utils.js');
+const { validationError, getError, putError, deleteError, logDBError, dbNotFound, postError } = require('../../../lib/utils.js');
+const { passwordsMustMatch, usernameExists, incorrectPassword, logBcryptError } = require('../../../lib/utils.js');
 const { resourceUpdated, resourceDeleted, resourceSoftDeleted } = require('../../../lib/utils.js');
 
 const { isLoggedIn, isAdmin, isUserOrAdmin, isUser } = require('../../../middlewares/');
@@ -273,8 +275,8 @@ router.put('/:id/switchLogin', isLoggedIn, isUserOrAdmin, (req, res, next) => {
   }
 });
 
-router.put('/:id/changePassword', isLoggedIn, isUser, (req, res, next) =>{
-  const { error } = idSchema.validate(req.params.id);
+router.put('/:id/changePassword', isLoggedIn, isUserOrAdmin, (req, res, next) =>{
+  const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const { error } = changePasswordSchema.validate(req.body);
     if ( error === undefined ) {
@@ -284,9 +286,57 @@ router.put('/:id/changePassword', isLoggedIn, isUser, (req, res, next) =>{
         // passwords match
         // compare req.body.user_password with password stored in the db
         const connection = createDBConnection();
-        connection.promise().query('SELECT Passwords.pass_hash FROM `Passwords` INNER JOIN `Users` ON Users.pass_id = Passwords.pass_id WHERE Users.user_id = '+req.params.id+'"')
+        connection.promise().query('SELECT Passwords.pass_hash, Users.pass_id FROM `Passwords` INNER JOIN `Users` ON Users.pass_id = Passwords.pass_id WHERE Users.user_id = "'+req.params.id+'"')
         .then(([rows, fields]) => {
-          res.json(rows);
+          bcrypt.compare(req.body.user_password, rows[0].pass_hash)
+          .then((result) => {
+            if (result) {
+              bcrypt.hash(req.body.new_password, saltRounds, function(err, hash) {
+                if (!err) {
+                  const values = `VALUES (NULL, "${hash}")`
+                  connection.promise().query('INSERT INTO `Passwords` (pass_id, pass_hash) '+values)
+                  .then(([rows1, fields1]) => {
+                    connection.promise().query('UPDATE `Users` SET pass_id = "'+ rows1.insertId +'" WHERE user_id = "' + req.params.id +'"')
+                    .then(([rows2, fields2]) =>{
+                      connection.promise().query('DELETE FROM `Passwords` WHERE pass_id = "'+ rows[0].pass_id + '"')
+                      .then(([rows3, field3]) => {
+                        res.json({
+                          message: "Password changed.",
+                          type: "success",
+                        })
+                      })
+                    })
+                    .catch((error) => {
+                      logDBError(error);
+                      putError(res, next);
+                    })
+                  })
+                  .catch((error) => {
+                    logDBError(error);
+                    postError(res, next);
+                  })
+                } else {
+                  logBcryptError(err);
+                  res.status(500);
+                  res.json({
+                    message: "Error with the password.",
+                    type: "error"
+                  })
+                }
+              });
+            } else {
+              incorrectPassword(res, next);
+            }
+          })
+          .catch((error) => {
+            logBcryptError(error);
+            res.status(500);
+            res.json({
+              message: "Error with the password.",
+              type: "error"
+            })
+          })
+          //res.json(rows);
         })
         .catch((error) => {
           logDBError(error);
@@ -300,6 +350,66 @@ router.put('/:id/changePassword', isLoggedIn, isUser, (req, res, next) =>{
     validationError(error, res, next);
   }
 });
+
+router.put('/:id/resetPassword', isLoggedIn, isAdmin, (req, res, next) => {
+  const { error } = idSchema.validate({id: req.params.id});
+  if (error === undefined) {
+    bcrypt.hash(req.body.new_password, saltRounds, function(err, hash) {
+      if (!err) {
+        const connection = createDBConnection();
+        connection.promise().query('SELECT pass_id FROM `Users` WHERE user_id = "' + req.params.id +'"')
+        .then(([rows, fields]) => {
+          const values = `VALUES (NULL, "${hash}")`
+          const connection1 = createDBConnection();
+          connection1.promise().query('INSERT INTO `Passwords` (pass_id, pass_hash) '+values)
+          .then(([rows1, fields1]) => {
+            const connection2 = createDBConnection();
+            connection2.promise().query('UPDATE `Users` SET pass_id = "'+ rows1.insertId +'" WHERE user_id = "' + req.params.id +'"')
+            .then(([rows2, fields2]) =>{
+              const connection3 = createDBConnection();
+              connection3.promise().query('DELETE FROM `Passwords` WHERE pass_id = "'+ rows[0].pass_id + '"')
+              .then(([rows3, field3]) => {
+                res.json({
+                  message: "Password resetted",
+                  type: "success"
+                })
+              })
+              .catch((error) => {
+                logDBError(error);
+                deleteError(res, next);
+              })
+              .then(() => connection3.end())
+            })
+            .catch((error) => {
+              logDBError(error);
+              putError(res, next);
+            })
+            .then(() => connection2.end());
+          })
+          .catch((error) => {
+            logDBError(error);
+            postError(res, next);
+          })
+          .then(() => connection1.end());
+        })
+        .catch((error) => {
+          logDBError(error);
+          getError(res, next);
+        })
+        .then(() => connection.end())
+      } else {
+        logBcryptError(err);
+        res.status(500);
+        res.json({
+          message: "Error with the password.",
+          type: "error"
+        })
+      }
+    });
+  } else {
+    validationError(error, res, next);
+  }
+})
 
 // DELETE Routes
 // DELETE user WHERE user_id = :id

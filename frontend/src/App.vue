@@ -29,4 +29,8 @@
     --bs-btn-active-bg: #0bc03a !important;
     --bs-btn-active-border-color: #0abb2e !important;
   }
+
+  .text-primary {
+    color: #0ed66d !important;
+  }
 </style>
