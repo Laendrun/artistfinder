@@ -33,7 +33,8 @@ router.get('/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reviews` WHERE review_id = "'+ req.params.id+'"')
+    connection.promise().query('SELECT * FROM `Reviews` WHERE review_id = ?',
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -56,7 +57,8 @@ router.get('/artist/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reviews` WHERE artist_id = "'+ req.params.id +'"')
+    connection.promise().query('SELECT * FROM `Reviews` WHERE artist_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -79,7 +81,8 @@ router.get('/place/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reviews` WHERE place_id = "'+ req.params.id +'"')
+    connection.promise().query('SELECT * FROM `Reviews` WHERE place_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -103,8 +106,8 @@ router.post('/', isLoggedIn, (req, res, next) => {
   const { error } = reviewSchema.validate(req.body);
   if ( error === undefined ) {
     const connection = createDBConnection();
-    let values = `VALUES (NULL, "${req.body.review_rating}", "${req.body.review_text}", "${req.body.user_id}", "${req.body.place_id}", "${req.body.artist_id}")`;
-    connection.promise().query('INSERT INTO `Reviews` (`review_id`, `review_rating`, `review_text`, `user_id`, `place_id`, `artist_id`) '+values)
+    connection.promise().query('INSERT INTO `Reviews` (`review_id`, `review_rating`, `review_text`, `user_id`, `place_id`, `artist_id`) VALUES (NULL, ?, ?, ?, ?, ?)', 
+    [ req.body.review_rating, req.body.review_text, req.body.user_id, req.body.place_id, req.body.artist_id ])
     .then(([rows, fields]) => {
       resourceCreated(res, rows.insertId);
     })
@@ -126,7 +129,8 @@ router.put('/:id', isLoggedIn, isUserOrAdmin, (req, res, next) => {
     const { error } = reviewSchema.validate(req.body);
     if ( error === undefined ) {
       const connection = createDBConnection();
-      connection.promise().query('UPDATE `Reviews` SET review_rating = "'+req.body.review_rating+'", review_text = "'+req.body.review_text+'", user_id = "'+req.body.user_id+'", place_id = "'+req.body.place_id+'", artist_id = "'+req.body.artist_id+'" WHERE review_id = "'+req.params.id+'"')
+      connection.promise().query('UPDATE `Reviews` SET review_rating = ?, review_text = ?, user_id = ?, place_id = ?, artist_id = ? WHERE review_id = ?', 
+      [req.body.review_rating, req.body.review_text, req.body.user_id, req.body.place_id, req.body.artist_id, req.params.id ])
       .then(([rows, fields]) => {
         if (rows.affectedRows != 0) {
           resourceUpdated(res, req.params.id);
@@ -153,7 +157,8 @@ router.delete('/:id', isLoggedIn, isUserOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('DELETE FROM `Reviews` WHERE review_id = "'+ req.params.id +'"')
+    connection.promise().query('DELETE FROM `Reviews` WHERE review_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {
         resourceDeleted(res, req.params.id);

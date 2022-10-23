@@ -55,7 +55,8 @@ router.get('/:id', isLoggedIn, isUser, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Users` WHERE user_id = "'+req.params.id+'"')
+    connection.promise().query('SELECT * FROM `Users` WHERE user_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -82,16 +83,19 @@ router.put('/:id', isLoggedIn, isUserOrAdmin, (req, res, next) => {
     if ( error === undefined ) {
       // check if username already exists in the db
       const connection = createDBConnection();
-      connection.promise().query('SELECT user_username FROM `Users` WHERE user_username = "'+ req.body.user_username +'" AND user_id != "'+ req.params.id +'"')
+      connection.promise().query('SELECT user_username FROM `Users` WHERE user_username = ? AND user_id != ?', 
+      [ req.body.user_username, req.params.id])
       .then(([rows, fields]) => {
         console.log(rows.length)
         if (rows.length == 0){
           const connection1 = createDBConnection();
-          connection1.promise().query('UPDATE `Users` SET user_username = "'+ req.body.user_username +'", user_fname = "'+req.body.user_fname+'", user_lname = "'+req.body.user_lname+'", user_email = "'+req.body.user_email+'" WHERE user_id = "'+req.params.id+'"')
+          connection1.promise().query('UPDATE `Users` SET user_username = ?, user_fname = ?, user_lname = ?, user_email = ? WHERE user_id = ?', 
+          [ req.body.user_username, req.body.user_fname, req.body.user_lname, req.body.user_email, req.params.id ])
           .then(([rows, fields]) => {
             if (rows.affectedRows != 0) {
               const connection2 = createDBConnection();
-              connection2.promise().query('SELECT * FROM `Users` WHERE user_id = "'+ req.params.id +'"')
+              connection2.promise().query('SELECT * FROM `Users` WHERE user_id = ?', 
+              [ req.params.id ])
               .then(([g_rows, g_fields]) => {
                 const secret = process.env.JWT_SECRET;
                 const data = {
@@ -143,11 +147,13 @@ router.put('/:id', isLoggedIn, isUserOrAdmin, (req, res, next) => {
   }
 });
 
+// Set role as Admin where user_id = id
 router.put('/:id/admin', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('UPDATE `Users` SET role_id = "9" WHERE user_id = "'+ req.params.id +'"')
+    connection.promise().query('UPDATE `Users` SET role_id = "9" WHERE user_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       res.json({
         type: `success`,
@@ -164,11 +170,13 @@ router.put('/:id/admin', isLoggedIn, isAdmin, (req, res, next) => {
   }
 });
 
+// Set role as User where user_id = id
 router.put('/:id/user', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('UPDATE `Users` SET role_id = "10" WHERE user_id = "'+ req.params.id +'"')
+    connection.promise().query('UPDATE `Users` SET role_id = "10" WHERE user_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       console.log(rows.affectedRows)
       res.json({
@@ -186,11 +194,14 @@ router.put('/:id/user', isLoggedIn, isAdmin, (req, res, next) => {
   }
 });
 
+// Block user where user_id = id
 router.put('/:id/block', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('UPDATE `Users` SET user_blocked = "1" WHERE user_id = "'+ req.params.id +'"')
+    const date = new Date();
+    connection.promise().query('UPDATE `Users` SET user_blocked = "1", user_blockedBy = ?, user_blockedTime = ? WHERE user_id = ?', 
+    [ req.user.user_id, date, req.params.id ])
     .then(([rows, fields]) => {
       res.json({
         type: `success`,
@@ -207,11 +218,14 @@ router.put('/:id/block', isLoggedIn, isAdmin, (req, res, next) => {
   }
 });
 
+// Unblock user where user_id = id
 router.put('/:id/unblock', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('UPDATE `Users` SET user_blocked = "0" WHERE user_id = "'+ req.params.id +'"')
+    const date = new Date();
+    connection.promise().query('UPDATE `Users` SET user_blocked = "0", user_unblockedBy = ?, user_unblockedTime = ? WHERE user_id = ?', 
+    [ req.user.user_id, date, req.params.id ])
     .then(([rows, fields]) => {
       res.json({
         type: `success`,
@@ -233,7 +247,9 @@ router.put('/:id/delete', isLoggedIn, isUserOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('UPDATE `Users` SET user_softDeleted = "1" WHERE user_id = "'+req.params.id+'"')
+    const date = new Date();
+    connection.promise().query('UPDATE `Users` SET user_softDeleted = "1", user_deletedBy = ?, user_deletedTime = ? WHERE user_id = ?', 
+    [ req.user.user_id, date, req.params.id ])
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {
         resourceSoftDeleted(res, req.params.id);
@@ -256,7 +272,8 @@ router.put('/:id/switchLogin', isLoggedIn, isUserOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('UPDATE `Users` SET user_login_type = "0" WHERE user_id = "'+req.params.id+'"')
+    connection.promise().query('UPDATE `Users` SET user_login_type = "0" WHERE user_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {
         console.log(req.params.id);
@@ -286,19 +303,21 @@ router.put('/:id/changePassword', isLoggedIn, isUserOrAdmin, (req, res, next) =>
         // passwords match
         // compare req.body.user_password with password stored in the db
         const connection = createDBConnection();
-        connection.promise().query('SELECT Passwords.pass_hash, Users.pass_id FROM `Passwords` INNER JOIN `Users` ON Users.pass_id = Passwords.pass_id WHERE Users.user_id = "'+req.params.id+'"')
+        connection.promise().query('SELECT Passwords.pass_hash, Users.pass_id FROM `Passwords` INNER JOIN `Users` ON Users.pass_id = Passwords.pass_id WHERE Users.user_id = ?', 
+        [ req.params.id ])
         .then(([rows, fields]) => {
           bcrypt.compare(req.body.user_password, rows[0].pass_hash)
           .then((result) => {
             if (result) {
               bcrypt.hash(req.body.new_password, saltRounds, function(err, hash) {
                 if (!err) {
-                  const values = `VALUES (NULL, "${hash}")`
-                  connection.promise().query('INSERT INTO `Passwords` (pass_id, pass_hash) '+values)
+                  connection.promise().query('INSERT INTO `Passwords` (pass_id, pass_hash) VALUES (NULL, ?)', 
+                  [ hash ])
                   .then(([rows1, fields1]) => {
-                    connection.promise().query('UPDATE `Users` SET pass_id = "'+ rows1.insertId +'" WHERE user_id = "' + req.params.id +'"')
+                    connection.promise().query('UPDATE `Users` SET pass_id = ? WHERE user_id = ?', 
+                    [ rows1.insertId, req.params.id ])
                     .then(([rows2, fields2]) =>{
-                      connection.promise().query('DELETE FROM `Passwords` WHERE pass_id = "'+ rows[0].pass_id + '"')
+                      connection.promise().query('DELETE FROM `Passwords` WHERE pass_id = ?', [ rows[0].pass_id ])
                       .then(([rows3, field3]) => {
                         res.json({
                           message: "Password changed.",
@@ -357,17 +376,20 @@ router.put('/:id/resetPassword', isLoggedIn, isAdmin, (req, res, next) => {
     bcrypt.hash(req.body.new_password, saltRounds, function(err, hash) {
       if (!err) {
         const connection = createDBConnection();
-        connection.promise().query('SELECT pass_id FROM `Users` WHERE user_id = "' + req.params.id +'"')
+        connection.promise().query('SELECT pass_id FROM `Users` WHERE user_id = ?', 
+        [ req.params.id ])
         .then(([rows, fields]) => {
           const values = `VALUES (NULL, "${hash}")`
           const connection1 = createDBConnection();
           connection1.promise().query('INSERT INTO `Passwords` (pass_id, pass_hash) '+values)
           .then(([rows1, fields1]) => {
             const connection2 = createDBConnection();
-            connection2.promise().query('UPDATE `Users` SET pass_id = "'+ rows1.insertId +'" WHERE user_id = "' + req.params.id +'"')
+            connection2.promise().query('UPDATE `Users` SET pass_id = ? WHERE user_id = ?', 
+            [ rows1.insertId, req.params.id ])
             .then(([rows2, fields2]) =>{
               const connection3 = createDBConnection();
-              connection3.promise().query('DELETE FROM `Passwords` WHERE pass_id = "'+ rows[0].pass_id + '"')
+              connection3.promise().query('DELETE FROM `Passwords` WHERE pass_id = ?', 
+              [ rows[0].pass_id ])
               .then(([rows3, field3]) => {
                 res.json({
                   message: "Password resetted",
@@ -417,7 +439,8 @@ router.delete('/:id', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('DELETE FROM `Users` WHERE user_id = "'+req.params.id+'"')
+    connection.promise().query('DELETE FROM `Users` WHERE user_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {
         resourceDeleted(res, req.params.id);

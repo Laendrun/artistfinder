@@ -66,7 +66,7 @@ router.get('/type/:type_id', (req, res, next) => {
   const { error } = idSchema.validate({id : req.params.type_id});
   if (error === undefined) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Artists` WHERE Artists.type_id = ' + req.params.type_id + ' AND `artist_validated` = "1"')
+    connection.promise().query('SELECT * FROM `Artists` WHERE Artists.type_id = ? AND `artist_validated` = "1"', [ req.params.type_id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -90,7 +90,7 @@ router.get('/type/name/:name', (req, res, next) => {
 
   if (error === undefined) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Artists` INNER JOIN `Types` ON Artists.type_id = Types.type_id WHERE Types.type_name LIKE \'%'+req.params.name+'%\' AND `artist_validated` = "1"')
+    connection.promise().query('SELECT * FROM `Artists` INNER JOIN `Types` ON Artists.type_id = Types.type_id WHERE Types.type_name LIKE %?% AND `artist_validated` = "1"', [ req.params.name ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -113,7 +113,7 @@ router.get('/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if (error === undefined){
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Artists` WHERE Artists.artist_id = "'+ req.params.id +'" AND `artist_validated` = "1"')
+    connection.promise().query('SELECT * FROM `Artists` WHERE Artists.artist_id = ? AND `artist_validated` = "1"', [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -137,7 +137,7 @@ router.get('/name/:name', (req, res, next) => {
   const { error } = nameSchema.validate({name: req.params.name});
   if (error === undefined){
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Artists` WHERE Artists.artist_name LIKE \'%'+req.params.name+'%\' AND `artist_validated` = "1"')
+    connection.promise().query('SELECT * FROM `Artists` WHERE Artists.artist_name LIKE %?% AND `artist_validated` = "1"', [ req.params.name ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);

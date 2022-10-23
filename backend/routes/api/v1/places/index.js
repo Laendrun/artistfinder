@@ -33,7 +33,8 @@ router.get('/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ){
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Places` WHERE place_id = "'+ req.params.id +'"')
+    connection.promise().query('SELECT * FROM `Places` WHERE place_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -56,7 +57,8 @@ router.get('/name/:name', (req, res, next) => {
   const { error } = nameSchema.validate({name: req.params.name});
   if ( error === undefined ){
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Places` WHERE place_name LIKE "%'+ req.params.name +'%"')
+    connection.promise().query('SELECT * FROM `Places` WHERE place_name LIKE "%?%"', 
+    [ req.params.name ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -79,7 +81,8 @@ router.get('/post_code/:post_code', (req, res, next) => {
   const { error } = post_codeSchema.validate({post_code: req.params.post_code});
   if ( error === undefined ){
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Places` WHERE place_postCode = "'+ req.params.post_code +'"')
+    connection.promise().query('SELECT * FROM `Places` WHERE place_postCode = ?', 
+    [ req.params.post_code ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -102,7 +105,8 @@ router.get('/city/:city', (req, res, next) => {
   const { error } = citySchema.validate({city: req.params.city});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Places` WHERE place_city LIKE "%'+ req.params.city +'%"')
+    connection.promise().query('SELECT * FROM `Places` WHERE place_city LIKE "%?%"', 
+    [ req.params.city ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -125,7 +129,8 @@ router.get('/capacity/min/:capacity', (req, res, next) => {
   const { error } = capacitySchema.validate({capacity: req.params.capacity});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Places` WHERE place_capacity >= "'+ req.params.capacity +'"')
+    connection.promise().query('SELECT * FROM `Places` WHERE place_capacity >= ?', 
+    [ req.params.capacity ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -148,7 +153,8 @@ router.get('/capacity/max/:capacity', (req, res, next) => {
   const { error } = capacitySchema.validate({capacity: req.params.capacity});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Places` WHERE place_capacity <= "'+ req.params.capacity +'"')
+    connection.promise().query('SELECT * FROM `Places` WHERE place_capacity <= ?', 
+    [ req.params.capacity ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -171,7 +177,8 @@ router.get('/capacity/is/:capacity', (req, res, next) => {
   const { error } = capacitySchema.validate({capacity: req.params.capacity});
   if ( error === undefined ){
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Places` WHERE place_capacity = "'+ req.params.capacity +'"')
+    connection.promise().query('SELECT * FROM `Places` WHERE place_capacity = ?', 
+    [ req.params.capacity ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -195,8 +202,8 @@ router.post('/', isLoggedIn, (req, res, next) => {
   const { error } = placeSchema.validate(req.body);
   if ( error === undefined ) {
     const connection = createDBConnection();
-    let values = `VALUES (NULL, "${req.body.place_name}", "${req.body.place_capacity}", "${req.body.place_address}", "${req.body.place_postCode}", "${req.body.place_city}")`;
-    connection.promise().query('INSERT INTO `Places` (`place_id`, `place_name`, `place_capacity`, `place_address`, `place_postCode`, `place_city`) '+values)
+    connection.promise().query('INSERT INTO `Places` (`place_id`, `place_name`, `place_capacity`, `place_address`, `place_postCode`, `place_city`) VALUES (NULL, ?, ?, ?, ?, ?)', 
+    [ req.body.place_name, req.body.place_capacity, req.body.place_address, req.body.place_postCode, req.body.place_city ])
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {
         resourceCreated(res, rows.insertId);
@@ -222,7 +229,8 @@ router.put('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
     const { error } = placeSchema.validate(req.body);
     if ( error === undefined ) {
       const connection = createDBConnection();
-      connection.promise().query('UPDATE `Places` SET place_name = "'+ req.body.place_name +'", place_capacity = "'+ req.body.place_capacity +'", place_address = "'+ req.body.palce_address +'", place_postCode = "'+ req.body.place_postCode +'", place_city = "'+ req.body.place_city +'" WHERE place_id = "'+ req.params.id +'"')
+      connection.promise().query('UPDATE `Places` SET place_name = ?, place_capacity = ?, place_address = ?, place_postCode = ?, place_city = ? WHERE place_id = ?', 
+      [ req.body.place_name, req.body.place_capacity, req.body.place_address, req.body.place_postCode, req.body.place_city, req.params.id ])
       .then(([rows, fields]) => {
         if (rows.affectedRows != 0) {
           resourceUpdated(res, req.params.id);
@@ -249,7 +257,8 @@ router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('DELETE FROM `Places` WHERE place_id = "'+ req.params.id +'"')
+    connection.promise().query('DELETE FROM `Places` WHERE place_id = ?',
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {
         resourceDeleted(res, req.params.id);

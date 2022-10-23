@@ -31,7 +31,8 @@ router.get('/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_id = "'+ req.params.id +'"')
+    connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -54,7 +55,8 @@ router.get('/date/is/:date', (req, res, next) => {
   const { error } = dateSchema.validate({date: req.params.date});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_date = "'+ req.params.date +'"')
+    connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_date = ?', 
+    [ req.params.date ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -77,7 +79,8 @@ router.get('/date/after/:date', (req, res, next) => {
   const { error } = dateSchema.validate({date: req.params.date});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_date >= "'+ req.params.date +'"')
+    connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_date >= ?', 
+    [ req.params.date ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -100,7 +103,8 @@ router.get('/date/before/:date', (req, res, next) => {
   const { error } = dateSchema.validate({date: req.params.date});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_date <= "'+ req.params.date +'"')
+    connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_date <= ?', 
+    [ req.params.date ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -123,7 +127,8 @@ router.get('/artist/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE artist_id = "'+ req.params.id +'"')
+    connection.promise().query('SELECT * FROM `Reservations` WHERE artist_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -146,7 +151,8 @@ router.get('/artist/name/:name', (req, res, next) => {
   const { error } = nameSchema.validate({name: req.params.name});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` INNER JOIN `Artists` ON Reservations.artist_id = Artists.artist_id WHERE Artists.artist_name LIKE "%'+ req.params.name +'%"')
+    connection.promise().query('SELECT * FROM `Reservations` INNER JOIN `Artists` ON Reservations.artist_id = Artists.artist_id WHERE Artists.artist_name LIKE "%?%"', 
+    [ req.params.name ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -169,7 +175,8 @@ router.get('/place/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE place_id = "'+ req.params.id +'"')
+    connection.promise().query('SELECT * FROM `Reservations` WHERE place_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -192,7 +199,8 @@ router.get('/place/name/:name', (req, res, next) => {
   const { error } = nameSchema.validate({name: req.params.name});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` INNER JOIN `Places` ON Reservations.place_id = Places.place_id WHERE Places.place_name LIKE "%'+ req.params.name +'%"')
+    connection.promise().query('SELECT * FROM `Reservations` INNER JOIN `Places` ON Reservations.place_id = Places.place_id WHERE Places.place_name LIKE "%?%"', 
+    [ req.params.name ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -215,7 +223,8 @@ router.get('/category/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE category_id = "'+ req.params.id + '"')
+    connection.promise().query('SELECT * FROM `Reservations` WHERE category_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -238,7 +247,8 @@ router.get('/category/name/:name', (req, res, next) => {
   const { error } = nameSchema.validate({name: req.params.name});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` INNER JOIN `Categories` ON Reservations.category_id = Categories.category_id WHERE Categories.category_name LIKE "%'+ req.params.name +'%"')
+    connection.promise().query('SELECT * FROM `Reservations` INNER JOIN `Categories` ON Reservations.category_id = Categories.category_id WHERE Categories.category_name LIKE "%?%"', 
+    [ req.params.name ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -262,8 +272,8 @@ router.post('/', (req, res, next) => {
   const { error } = reservationSchema.validate(req.body);
   if ( error === undefined ) {
     const connection = createDBConnection();
-    const values = `VALUES (NULL, "${req.body.reservation_date}", "${req.body.reservation_time}", "${req.body.place_id}", "${req.body.artist_id}", "${req.body.category_id}")`;
-    connection.promise().query('INSERT INTO `Reservations` (`reservation_id`, `reservation_date`, `reservation_time`, `place_id`, `artist_id`, `category_id`) '+values)
+    connection.promise().query('INSERT INTO `Reservations` (`reservation_id`, `reservation_date`, `reservation_time`, `place_id`, `artist_id`, `category_id`) VALUES (NULL, ?, ?, ?, ?, ?)', 
+    [ req.body.reservation_date, req.body.reservation_time, req.body.place_id, req.body.artist_id, req.body.category_id ])
     .then(([rows, fields]) => {
       resourceCreated(res, rows.insertId);
     })
@@ -285,7 +295,8 @@ router.put('/:id', (req, res, next) => {
     const { error } = reservationSchema.validate(req.body);
     if ( error === undefined ) {
       const connection = createDBConnection();
-      connection.promise().query('UPDATE `Reservations` SET reservation_date = "'+req.body.reservation_date+'", reservation_time = "'+req.body.reservation_time+'", place_id = "'+req.body.place_id+'", artist_id = "'+req.body.artist_id+'", category_id = "'+req.body.category_id+'" WHERE reservation_id = "'+ req.params.id +'"')
+      connection.promise().query('UPDATE `Reservations` SET reservation_date = ?, reservation_time = ?, place_id = ?, artist_id = ?, category_id = ? WHERE reservation_id = ?', 
+      [ req.body.reservation_date, req.body.reservation_time, req.body.place_id, req.body.artist_id, req.body.category_id, req.params.id ])
       .then(([rows, fields]) => {
         if (rows.affectedRows != 0) {
           resourceUpdated(res, req.params.id);
@@ -312,7 +323,8 @@ router.delete('/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('DELETE FROM `Reservations` WHERE reservation_id = "'+req.params.id+'"')
+    connection.promise().query('DELETE FROM `Reservations` WHERE reservation_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {
         resourceDeleted(res, req.params.id);

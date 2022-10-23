@@ -11,6 +11,8 @@ const types = require('./types/');
 const users = require('./users/');
 const auth = require('./auth/');
 
+const mail = require('./mail');
+
 const router = express.Router();
 
 router.use('/artists/', artists);
@@ -23,5 +25,6 @@ router.use('/styles/', styles);
 router.use('/types/', types);
 router.use('/users/', users);
 router.use('/auth/', auth);
+router.use('/mail/', mail);
 
 module.exports = router;

@@ -106,8 +106,8 @@ const signupSchema = Joi.object({
   user_lname: Joi.string().min(2).max(64).required(),
   user_username: Joi.string().min(2).max(64).required(),
   user_email: Joi.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).required(),
-  user_password: Joi.string().required(),
-  confirm_password:Joi.string().required(),
+  user_password: Joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,32}$/).required(),
+  confirm_password:Joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,32}$/).required(),
 });
 
 const signinSchema = Joi.object({
@@ -117,9 +117,9 @@ const signinSchema = Joi.object({
 }).xor('user_username', 'user_email');
 
 const changePasswordSchema = Joi.object({
-  user_password: Joi.string().required(),
-  new_password: Joi.string().required(),
-  confirm_password: Joi.string().required(),
+  user_password: Joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,32}$/).required(),
+  new_password: Joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,32}$/).required(),
+  confirm_password: Joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,32}$/).required(),
 });
 
 module.exports = {

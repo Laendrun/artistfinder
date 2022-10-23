@@ -34,7 +34,8 @@ router.get('/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Categories` WHERE category_id = "'+ req.params.id + '"')
+    connection.promise().query('SELECT * FROM `Categories` WHERE category_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -57,7 +58,8 @@ router.get('/name/:name', (req, res, next) => {
   const { error } = nameSchema.validate({name: req.params.name});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Categories` WHERE category_name LIKE "%'+ req.params.name + '%"')
+    connection.promise().query('SELECT * FROM `Categories` WHERE category_name LIKE "%?%"', 
+    [ req.params.name])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -81,8 +83,8 @@ router.post('/', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = categorySchema.validate(req.body);
   if (error === undefined) {
     const connection = createDBConnection();
-    const values = `VALUES (NULL, "${req.body.category_name}")`;
-    connection.promise().query('INSERT INTO `Categories` '+ values)
+    connection.promise().query('INSERT INTO `Categories` VALUES (NULL, ?)', 
+    [ req.body.category_name ])
     .then(([rows, fields]) => {
       resourceCreated(res, rows.insertId);
     })
@@ -102,7 +104,8 @@ router.put('/:id', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('UPDATE `Categories` SET category_name = "'+ req.body.category_name +'" WHERE category_id = "'+ req.params.id +'"')
+    connection.promise().query('UPDATE `Categories` SET category_name = ? WHERE category_id = ?', 
+    [ req.body.category_name, req.params.id ])
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {
         resourceUpdated(res, req.params.id);
@@ -126,7 +129,8 @@ router.delete('/:id', isLoggedIn, isAdmin, (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('DELETE FROM `Categories` WHERE category_id = "'+ req.params.id + '"')
+    connection.promise().query('DELETE FROM `Categories` WHERE category_id = ?', 
+    [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.affectedRows != 0) {
         resourceDeleted(res, req.params.id);

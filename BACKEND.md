@@ -7,7 +7,7 @@
   - [x] Modify isOwner to also check if user isOwner of a place
   - [x] Modify the DB to be able to store the place id a user is owner of
   - [x] Modify the token sent back to also send place_id
-- [ ] /!\ change JWT secret
+- [x] /!\ change JWT secret
 - [ ] /!\ add an env variable for the admin role id
 - [ ] /!\ add an env variable for the user role id
 - [ ] /!\ add an env variable for the moderator role id
