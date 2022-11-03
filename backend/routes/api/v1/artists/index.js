@@ -173,9 +173,10 @@ router.post('/', isLoggedIn, (req, res, next) => {
 
   if ( error === undefined ) {
     const connection = createDBConnection();
-    //let values = `VALUES (NULL, "${req.body.artist_name}", "${req.body.artist_isGroup}", "${req.body.type_id}", "${req.body.style_id}")`;
     req.body.isGroup = req.body.isGroup ? 1 : 0;
-    connection.promise().query('INSERT INTO `Artists` (`artist_id`, `artist_name`, `artist_isGroup`, `type_id`, `style_id`) VALUES (NULL, ?, ?, ?. ?)', [ req.body.artist_name, req.body.artist_isGroup, req.body.type_id, req.body.style_id ])
+	req.body.artist_contact_phone = req.body.artist_contact_phone ? req.body.artist_contact_phone : null;
+	req.body.artist_contact_email = req.body.artist_contact_email ? req.body.artist_contact_email : null;
+    connection.promise().query('INSERT INTO `Artists` (`artist_id`, `artist_name`, `artist_isGroup`, `type_id`, `style_id`, `artist_contact_phone`, `artist_contact_email`) VALUES (NULL, ?, ?, ?, ?, ?, ?)', [ req.body.artist_name, req.body.artist_isGroup, req.body.type_id, req.body.style_id, req.body.artist_contact_phone, req.body.artist_contact_email ])
     .then(([rows, fields]) => {
       resourceCreated(res, rows.insertId);
     })

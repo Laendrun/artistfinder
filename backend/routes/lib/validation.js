@@ -1,11 +1,16 @@
 const Joi = require('joi');
 
+const email_regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const pass_regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,64}$/;
+
 // artist validation schema
 const artistSchema = Joi.object({
   artist_name: Joi.string().min(4).max(30).required(),
   artist_isGroup: Joi.number().min(0).max(1).required(),
   type_id: Joi.number().required(),
   style_id: Joi.number().required(),
+  artist_contact_phone: Joi.string().min(7).max(25).optional(),
+  artist_contact_email: Joi.string().regex(email_regex).optional(),
 });
 
 // category validation schema
@@ -60,7 +65,7 @@ const userSchema = Joi.object({
   user_fname: Joi.string().min(2).max(64).required(),
   user_lname: Joi.string().min(2).max(64).required(),
   user_username: Joi.string().min(2).max(64).required(),
-  user_email: Joi.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).required(),
+  user_email: Joi.string().regex(email_regex).required(),
   type_id: Joi.number().required(),
   role_id: Joi.number().required()
 });
@@ -69,7 +74,7 @@ const userUpdateSchema = Joi.object({
   user_fname: Joi.string().min(2).max(64).required(),
   user_lname: Joi.string().min(2).max(64).required(),
   user_username: Joi.string().min(2).max(64).required(),
-  user_email: Joi.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).required(),
+  user_email: Joi.string().regex(email_regex).required(),
 });
 // post_code validation schema
 const post_codeSchema = Joi.object({
@@ -105,21 +110,21 @@ const signupSchema = Joi.object({
   user_fname: Joi.string().min(2).max(64).required(),
   user_lname: Joi.string().min(2).max(64).required(),
   user_username: Joi.string().min(2).max(64).required(),
-  user_email: Joi.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).required(),
-  user_password: Joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,32}$/).required(),
-  confirm_password:Joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,32}$/).required(),
+  user_email: Joi.string().regex(email_regex).required(),
+  user_password: Joi.string().regex(pass_regex).required(),
+  confirm_password:Joi.string().regex(pass_regex).required(),
 });
 
 const signinSchema = Joi.object({
   user_username: Joi.string().min(2).max(64),
-  user_email: Joi.string().regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/),
+  user_email: Joi.string().regex(email_regex),
   user_password: Joi.string().required(),
 }).xor('user_username', 'user_email');
 
 const changePasswordSchema = Joi.object({
-  user_password: Joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,32}$/).required(),
-  new_password: Joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,32}$/).required(),
-  confirm_password: Joi.string().regex(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,32}$/).required(),
+  user_password: Joi.string().regex(pass_regex).required(),
+  new_password: Joi.string().regex(pass_regex).required(),
+  confirm_password: Joi.string().regex(pass_regex).required(),
 });
 
 module.exports = {
