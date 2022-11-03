@@ -3,8 +3,9 @@ import ArtistsListView from '@/views/ArtistsListView.vue'
 import HomeView from '@/views/HomeView.vue'
 import SigninView from '@/views/SigninView.vue'
 import ProfileView from '@/views/ProfileView.vue'
-import AdminView from '@/views/AdminView.vue'
+import AdminViewV2 from '@/views/AdminViewV2'
 import SignupView from '@/views/SignupView.vue'
+import ArtistCard from '@/components/artist_card/ArtistCard.vue'
 
 const routes = [
   {
@@ -16,6 +17,11 @@ const routes = [
     path: '/artists',
     name: 'artists',
     component: ArtistsListView
+  },
+  {
+    path: '/artists/:id',
+    name: 'artists/:id',
+    component: ArtistCard
   },
   {
     path: '/signup',
@@ -31,7 +37,6 @@ const routes = [
       if (localStorage.getItem('Authorization') === null) {
         isLoggedIn = false;
       }
-      
       if (!isLoggedIn) {
         next();
       } else {
@@ -48,7 +53,6 @@ const routes = [
       if (localStorage.getItem('Authorization') === null) {
         isLoggedIn = false;
       }
-      
       if (isLoggedIn) {
         next();
       } else {
@@ -59,7 +63,7 @@ const routes = [
   {
     path: '/admin',
     name: 'admin',
-    component: AdminView,
+    component: AdminViewV2,
   }
 ]
 

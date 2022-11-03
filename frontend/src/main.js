@@ -9,25 +9,11 @@ import { faGithub, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { faUser } from "@fortawesome/free-regular-svg-icons"
 import { faHeart, faRightFromBracket, faPen, faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan, faBan, faUserTie, faUserPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { faUserXmark, faUserSlash, faShuffle } from '@fortawesome/free-solid-svg-icons'
+import { faUserXmark, faUserSlash, faShuffle, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faGithub)
-library.add(faHeart)
-library.add(faInstagram)
-library.add(faUser)
-library.add(faUserTie)
-library.add(faUserPlus)
-library.add(faUserXmark)
-library.add(faUserSlash)
-library.add(faRightFromBracket)
-library.add(faPen)
-library.add(faArrowUp)
-library.add(faArrowDown)
-library.add(faTrashCan)
-library.add(faBan)
-library.add(faCheck)
-library.add(faShuffle)
+library.add(faGithub, faHeart, faInstagram, faUser, faUserTie, faUserPlus, faUserXmark, faUserSlash, faRightFromBracket)
+library.add(faPen, faArrowUp, faArrowDown, faTrashCan, faBan, faCheck, faShuffle, faArrowUpRightFromSquare)
 
 const app = createApp(App).component("font-awesome-icon", FontAwesomeIcon);
 app.use(router);

@@ -119,8 +119,7 @@ router.put('/:id', isLoggedIn, isUserOrAdmin, (req, res, next) => {
                 logDBError(error);
                 getError(res, next);
               })
-              .then(() => connection1.end())
-              //resourceUpdated(res, req.params.id);
+              .then(() => connection2.end())
             } else {
               dbNotFound(res, next);
             }

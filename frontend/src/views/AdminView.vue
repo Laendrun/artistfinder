@@ -1,5 +1,4 @@
 <script setup>
-import AdminInfo from '@/components/admin_dashboard/AdminInfo.vue'
 import UserListCard from '@/components/admin_dashboard/UserListCard.vue'
 import { onMounted } from 'vue'
 

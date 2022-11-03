@@ -25,7 +25,7 @@ const data = await updated()
 const role = data.role_id
 
 onMounted(() => {
-  document.title = 'Profile'
+  document.title = 'Profil'
 })
 </script>
 

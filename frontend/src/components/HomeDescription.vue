@@ -15,10 +15,6 @@ export default {
     <p>> Pourquoi faire encore une plateforme ? Il en existe déjà énormément qui fonctionnent très bien.</p>
     <p>Nous savons que toutes ces plateformes existent, mais nous avons remarqué que la plupart d'entre elles sont destinées aux musiciens.</p>
     <p>Nous voulons offrir une plateforme globale pour <strong>tous</strong> les artistes.</p>
-  
-    <h3>Comment tout ça a commencé ?</h3>
-    <p>Un ancien collègue de travail m'a envoyé un message expliquant en gros le projet.</p>
-    <p>Je lui ai demandé plus d'informations sur ce projet, il m'a expliqué, j'ai trouvé ça génial, et je m'y suis mis instantanément.</p>
 
     <h3>Où en est le projet ?</h3>
     <p>Actuellement, le projet n'en est qu'à sa phase de développement.</p>

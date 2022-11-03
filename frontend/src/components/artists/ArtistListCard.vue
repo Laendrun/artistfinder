@@ -19,6 +19,10 @@
               <p v-else class="card-text">Groupe: Non</p>
               <p class="card-text">Style: {{ artist.style_name }}</p>
               <p class="card-text">Type: {{ artist.type_name }}</p>
+              <RouterLink :to="`/artists/${artist.artist_id}`" class="text-primary" >
+                Plus de détails 
+                <font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" />
+              </RouterLink>
             </div>
           </div>
         </div>
