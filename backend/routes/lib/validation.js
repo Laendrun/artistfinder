@@ -2,6 +2,7 @@ const Joi = require('joi');
 
 const email_regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const pass_regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,64}$/;
+const website_regex = /^((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
 
 // artist validation schema
 const artistSchema = Joi.object({
@@ -11,6 +12,11 @@ const artistSchema = Joi.object({
   style_id: Joi.number().required(),
   artist_contact_phone: Joi.string().min(7).max(25).optional(),
   artist_contact_email: Joi.string().regex(email_regex).optional(),
+});
+
+// link validation schema
+const websiteSchema = Joi.object({
+	artist_website: Joi.string().regex(website_regex).required(),
 });
 
 // category validation schema
@@ -147,4 +153,5 @@ module.exports = {
   signinSchema,
   roleSchema,
   changePasswordSchema,
+  websiteSchema,
 }

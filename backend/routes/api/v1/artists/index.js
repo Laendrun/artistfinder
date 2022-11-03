@@ -1,7 +1,7 @@
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
-const { idSchema, nameSchema, artistSchema } = require('../../../lib/validation.js');
+const { idSchema, nameSchema, artistSchema, websiteSchema } = require('../../../lib/validation.js');
 const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
 const { resourceCreated, resourceUpdated, resourceDeleted } = require('../../../lib/utils.js');
 
@@ -267,6 +267,35 @@ router.put('/:id/unverify', isLoggedIn, isAdmin, (req, res, next) => {
   } else {
     validationError(error, res, next);
   }
+});
+
+router.put('/:id/website', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+	const { error } = idSchema.validate({id: req.params.id});
+	if (error === undefined) {
+		const { error } = websiteSchema.validate({artist_website: req.body.artist_website});
+		if (error === undefined) {
+			const connection = createDBConnection();
+			connection.promise().query('UPDATE `Artists` SET artist_website = ? WHERE artist_id = ?', [ req.body.artist_website, req.params.id])
+			.then(([rows, fields]) => {
+				if (rows.affectedRows != 0) {
+					resourceUpdated(res, req.params.id);
+				} else {
+					dbNotFound(res, next);
+				}
+			})
+			.catch((error) => {
+				logDBError(error);
+				putError(res, next);
+			})
+			.then( () => connection.end());
+		} else {
+			// website link validation error
+			validationError(error, res, next);
+		}
+	} else {
+		// id validation error
+		validationError(error, res, next);
+	}
 });
 
 // DELETE routes
