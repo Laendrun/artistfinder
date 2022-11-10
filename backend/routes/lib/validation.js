@@ -19,6 +19,12 @@ const websiteSchema = Joi.object({
 	artist_website: Joi.string().regex(website_regex).required(),
 });
 
+// social validation schema
+const socialSchema = Joi.object({
+	social: Joi.string().required(),
+	link: Joi.string().regex(website_regex).required(),
+});
+
 // category validation schema
 const categorySchema = Joi.object({
   category_name: Joi.string().min(4).max(30).required(),
@@ -154,4 +160,5 @@ module.exports = {
   roleSchema,
   changePasswordSchema,
   websiteSchema,
+  socialSchema
 }

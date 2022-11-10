@@ -1,14 +1,16 @@
 const express = require('express');
 
 const { createDBConnection } = require('../../../lib/db.js');
-const { idSchema, nameSchema, artistSchema, websiteSchema } = require('../../../lib/validation.js');
+const { idSchema, nameSchema, artistSchema, websiteSchema, socialSchema } = require('../../../lib/validation.js');
 const { validationError, getError, putError, postError, deleteError, logDBError, dbNotFound } = require('../../../lib/utils.js');
 const { resourceCreated, resourceUpdated, resourceDeleted } = require('../../../lib/utils.js');
 
-const { isLoggedIn, isOwnerOrAdmin, isAdmin } = require('../../../middlewares/');
+const { isLoggedIn, isOwnerOrAdmin, isAdmin, isOwner } = require('../../../middlewares/');
 
 const verified = require('./verified/');
 const unverified = require('./unverified/');
+
+const socials = ['twitter', 'facebook', 'youtube', 'instagram', 'linkedin'];
 
 const router = express.Router();
 
@@ -248,25 +250,25 @@ router.put('/:id/verify', isLoggedIn, isAdmin, (req, res, next) => {
 
 // set artist as not verified
 router.put('/:id/unverify', isLoggedIn, isAdmin, (req, res, next) => {
-  const { error } = idSchema.validate({id: req.params.id});
-  if (error === undefined) {
-    const connection = createDBConnection();
-    connection.promise().query('UPDATE `Artists` SET artist_validated = "0" WHERE artist_id = ?', [ req.params.id ])
-    .then(([rows, fields]) => {
-      if (rows.affectedRows != 0) {
-        resourceUpdated(res, req.params.id);
-      } else {
-        dbNotFound(res, next);
-      }
-    })
-    .catch((error) => {
-      logDBError(error);
-      putError(res, next);
-    })
-    .then( () => connection.end());
-  } else {
-    validationError(error, res, next);
-  }
+	const { error } = idSchema.validate({id: req.params.id});
+	if (error === undefined) {
+		const connection = createDBConnection();
+		connection.promise().query('UPDATE `Artists` SET artist_validated = "0" WHERE artist_id = ?', [ req.params.id ])
+		.then(([rows, fields]) => {
+			if (rows.affectedRows != 0) {
+			resourceUpdated(res, req.params.id);
+			} else {
+			dbNotFound(res, next);
+			}
+		})
+		.catch((error) => {
+			logDBError(error);
+			putError(res, next);
+		})
+		.then( () => connection.end());
+	} else {
+		validationError(error, res, next);
+	}
 });
 
 router.put('/:id/website', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
@@ -290,6 +292,45 @@ router.put('/:id/website', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
 			.then( () => connection.end());
 		} else {
 			// website link validation error
+			validationError(error, res, next);
+		}
+	} else {
+		// id validation error
+		validationError(error, res, next);
+	}
+});
+
+// Update social media handle
+router.put('/:id/social', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+	const { error } = idSchema.validate({id: req.params.id});
+	if (error === undefined) {
+		// new validation schema to validate req.body (social & link) => socialSchema ?
+		const { error } = socialSchema.validate(req.body);
+		if (error === undefined) {
+			if (socials.includes(req.body.social.toLowerCase())) {
+				const connection = createDBConnection();
+				const col = `artist_${req.body.social}`;
+				connection.promise().query('UPDATE `Artists` SET '+ col +' = ? WHERE artist_id = ?', [req.body.link, req.params.id ])
+				.then(([rows, fields]) => {
+					if (rows.affectedRows != 0) {
+						resourceUpdated(res, req.params.id);
+					} else {
+						dbNotFound(res, next);
+					}
+				})
+				.catch((error) => {
+					logDBError(error);
+					putError(res, next);
+				})
+				.then( () => connection.end());
+			} else {
+				res.json({
+					"type": "error",
+					"message": "Social media not supported."
+				});
+			}
+		} else {
+			// link validation error
 			validationError(error, res, next);
 		}
 	} else {
