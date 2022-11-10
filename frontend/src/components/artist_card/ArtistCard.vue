@@ -74,6 +74,38 @@
 								<p><a :href="`${link}`" target="_blank">{{ linkWithoutHttp }}</a></p>
 							</div>
 						</div>
+						<div class="col-md-6">
+							<div class="row" v-if="artist.artist_instagram">
+								<p>
+									<font-awesome-icon icon="fa-brands fa-instagram" />
+									{{ artist.artist_instagram }}
+								</p>
+							</div>
+							<div class="row" v-if="artist.artist_instagram">
+								<p>
+									<font-awesome-icon icon="fa-brands fa-youtube" />
+									{{ artist.artist_youtube }}
+								</p>
+							</div>
+							<div class="row" v-if="artist.artist_instagram">
+								<p>
+									<font-awesome-icon icon="fa-brands fa-linkedin" />
+									{{ artist.artist_linkedin }}
+								</p>
+							</div>
+							<div class="row" v-if="artist.artist_instagram">
+								<p>
+									<font-awesome-icon icon="fa-brands fa-twitter" />
+									{{ artist.artist_twitter }}
+								</p>
+							</div>
+							<div class="row" v-if="artist.artist_instagram">
+								<p>
+									<font-awesome-icon icon="fa-brands fa-facebook" />
+									{{ artist.artist_facebook }}
+								</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
