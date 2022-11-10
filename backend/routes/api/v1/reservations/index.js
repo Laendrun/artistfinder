@@ -131,8 +131,7 @@ router.get('/artist/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-	request += ' WHERE artist_id = ?'
-    connection.promise().query(request, [ req.params.id ])
+    connection.promise().query('SELECT '+ select +' FROM `Reservations` INNER JOIN `Places` ON Reservations.place_id = Places.place_id  INNER JOIN `Categories` ON Reservations.category_id = Categories.category_id WHERE Reservations.artist_id = '+ req.params.id)
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
