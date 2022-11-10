@@ -7,17 +7,21 @@ const { resourceCreated, resourceUpdated, resourceDeleted } = require('../../../
 
 const router = express.Router();
 
+const select = 'Reservations.reservation_id, Reservations.reservation_date, Reservations.reservation_time, Places.place_id, Places.place_name, Categories.category_id, Categories.category_name';
+let request = 'SELECT ' + select + ' FROM `Reservations` INNER JOIN `Places` ON Reservations.place_id = Places.place_id';
+request += ' INNER JOIN `Categories` ON Reservations.category_id = Categories.category_id'
+
 // GET routes
 // GET all reservations
 router.get('/', (req, res, next) => {
-  const connection = createDBConnection();
-  connection.promise().query('SELECT * FROM `Reservations`')
+	const connection = createDBConnection();
+  connection.promise().query(request)
   .then(([rows, fields]) => {
-    if (rows.length != 0) {
+	if (rows.length != 0) {
       res.json(rows);
-    } else {
+	} else {
       dbNotFound(res, next);
-    }
+	}
   })
   .catch((error) => {
     logDBError(error);
@@ -31,8 +35,8 @@ router.get('/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_id = ?', 
-    [ req.params.id ])
+	request += ' WHERE reservation_id = ?'
+    connection.promise().query(request, [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -55,8 +59,8 @@ router.get('/date/is/:date', (req, res, next) => {
   const { error } = dateSchema.validate({date: req.params.date});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_date = ?', 
-    [ req.params.date ])
+	request += ' WHERE reservation_date = ?'
+    connection.promise().query(request, [ req.params.date ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -79,8 +83,8 @@ router.get('/date/after/:date', (req, res, next) => {
   const { error } = dateSchema.validate({date: req.params.date});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_date >= ?', 
-    [ req.params.date ])
+	request += ' WHERE reservation_date >= ?'
+    connection.promise().query(request, [ req.params.date ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -103,8 +107,8 @@ router.get('/date/before/:date', (req, res, next) => {
   const { error } = dateSchema.validate({date: req.params.date});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE reservation_date <= ?', 
-    [ req.params.date ])
+	request += ' WHERE reservation_date <= ?'
+    connection.promise().query(request, [ req.params.date ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -127,8 +131,8 @@ router.get('/artist/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE artist_id = ?', 
-    [ req.params.id ])
+	request += ' WHERE artist_id = ?'
+    connection.promise().query(request, [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
@@ -150,14 +154,20 @@ router.get('/artist/:id', (req, res, next) => {
 router.get('/artist/name/:name', (req, res, next) => {
   const { error } = nameSchema.validate({name: req.params.name});
   if ( error === undefined ) {
-    const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` INNER JOIN `Artists` ON Reservations.artist_id = Artists.artist_id WHERE Artists.artist_name LIKE "%?%"', 
-    [ req.params.name ])
-    .then(([rows, fields]) => {
+	const connection = createDBConnection();
+	let sql = 'SELECT Reservations.reservation_id, Reservations.reservation_date, Reservations.reservation_time, Places.place_id, Places.place_name, Categories.category_id, Categories.category_name FROM `Reservations`';
+		sql += ' INNER JOIN `Places` ON Reservations.place_id = Places.place_id INNER JOIN `Categories` ON Reservations.category_id = Categories.category_id INNER JOIN `Artists` ON Reservations.artist_id = Artists.artist_id';
+		sql += ' WHERE Artists.artist_name LIKE "%'+ req.params.name +'%"';
+	connection.promise().query(sql)
+	.then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
       } else {
-        dbNotFound(res, next);
+        res.json({
+			rows: rows,
+			fields: fields
+		})
+		//dbNotFound(res, next);
       }
     })
     .catch((error) => {
@@ -174,23 +184,22 @@ router.get('/artist/name/:name', (req, res, next) => {
 router.get('/place/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
-    const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE place_id = ?', 
-    [ req.params.id ])
-    .then(([rows, fields]) => {
+	const connection = createDBConnection();
+	connection.promise().query('SELECT '+ select +' FROM `Reservations` INNER JOIN Places ON Reservations.place_id = Places.place_id INNER JOIN Categories ON Reservations.category_id = Categories.category_id WHERE Reservations.place_id = ?', [ req.params.id ])
+	.then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
       } else {
-        dbNotFound(res, next);
+		dbNotFound(res, next);
       }
     })
-    .catch((error) => {
+	.catch((error) => {
       logDBError(error);
       getError(res, next);
-    })
-    .then( () => connection.end());
+	})
+	.then( () => connection.end());
   } else {
-    validationError(error, res, next);
+	validationError(error, res, next);
   }
 });
 
@@ -199,7 +208,7 @@ router.get('/place/name/:name', (req, res, next) => {
   const { error } = nameSchema.validate({name: req.params.name});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` INNER JOIN `Places` ON Reservations.place_id = Places.place_id WHERE Places.place_name LIKE "%?%"', 
+    connection.promise().query('SELECT '+ select +' FROM `Reservations` INNER JOIN `Places` ON Reservations.place_id = Places.place_id INNER JOIN Categories ON Reservations.category_id = Categories.category_id WHERE Places.place_name LIKE "%'+ req.params.name +'%"', 
     [ req.params.name ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
@@ -223,7 +232,7 @@ router.get('/category/:id', (req, res, next) => {
   const { error } = idSchema.validate({id: req.params.id});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` WHERE category_id = ?', 
+    connection.promise().query('SELECT '+ select +' FROM `Reservations` INNER JOIN Places ON Reservations.place_id = Places.place_id INNER JOIN Categories ON Reservations.category_id = Categories.category_id WHERE Reservations.category_id = ?', 
     [ req.params.id ])
     .then(([rows, fields]) => {
       if (rows.length != 0) {
@@ -247,8 +256,7 @@ router.get('/category/name/:name', (req, res, next) => {
   const { error } = nameSchema.validate({name: req.params.name});
   if ( error === undefined ) {
     const connection = createDBConnection();
-    connection.promise().query('SELECT * FROM `Reservations` INNER JOIN `Categories` ON Reservations.category_id = Categories.category_id WHERE Categories.category_name LIKE "%?%"', 
-    [ req.params.name ])
+    connection.promise().query('SELECT '+ select +' FROM `Reservations` INNER JOIN `Categories` ON Reservations.category_id = Categories.category_id INNER JOIN Places ON Reservations.place_id = Places.place_id WHERE Categories.category_name LIKE "%'+ req.params.name +'%"')
     .then(([rows, fields]) => {
       if (rows.length != 0) {
         res.json(rows);
