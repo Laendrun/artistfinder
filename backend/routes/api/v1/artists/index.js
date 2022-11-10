@@ -364,4 +364,147 @@ router.delete('/:id', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
   }
 });
 
+// DELETE website link for a specific artist
+router.delete('/:id/website', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+	const { error } = idSchema.validate({id: req.params.id});
+	if (error === undefined) {
+		const connection = createDBConnection();
+		connection.promise().query('UPDATE `Artists` SET artist_website = NULL WHERE artist_id = ?', [ req.params.id ])
+		.then(([rows, fields]) => {
+			if (rows.affectedRows != 0) {
+				resourceDeleted(res, req.params.id);
+			} else {
+				dbNotFound(res, next);
+			}
+		})
+		.catch((error) => {
+			logDBError(error);
+			deleteError(res, next);
+		})
+		.then( () => connection.end());
+	} else {
+		// id validation error
+		validationError(error, res, next);
+	}
+});
+
+// DELETE twitter link
+router.delete('/:id/social/twitter', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+	const { error } = idSchema.validate({id: req.params.id});
+	if (error === undefined) {
+		const connection = createDBConnection();
+		connection.promise().query('UPDATE `Artists` SET artist_twitter = NULL WHERE artist_id = ?', [req.params.id])
+		.then(([rows, fields]) => {
+			if (rows.affectedRows != 0) {
+				resourceDeleted(res, req.params.id);
+			} else {
+				dbNotFound(res, next);
+			}
+		})
+		.catch((error) => {
+			logDBError(error);
+			deleteError(res, next);
+		})
+		.then( () => connection.end());
+	} else {
+		// id validation error
+		validationError(error, res, next);
+	}
+});
+
+// DELETE facebook link
+router.delete('/:id/social/facebook', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+	const { error } = idSchema.validate({id: req.params.id});
+	if (error === undefined) {
+		const connection = createDBConnection();
+		connection.promise().query('UPDATE `Artists` SET artist_facebook = NULL WHERE artist_id = ?', [req.params.id])
+		.then(([rows, fields]) => {
+			if (rows.affectedRows != 0) {
+				resourceDeleted(res, req.params.id);
+			} else {
+				dbNotFound(res, next);
+			}
+		})
+		.catch((error) => {
+			logDBError(error);
+			deleteError(res, next);
+		})
+		.then( () => connection.end());
+	} else {
+		// id validation error
+		validationError(error, res, next);
+	}
+});
+
+// DELETE youtube link
+router.delete('/:id/social/youtube', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+	const { error } = idSchema.validate({id: req.params.id});
+	if (error === undefined) {
+		const connection = createDBConnection();
+		connection.promise().query('UPDATE `Artists` SET artist_youtube = NULL WHERE artist_id = ?', [req.params.id])
+		.then(([rows, fields]) => {
+			if (rows.affectedRows != 0) {
+				resourceDeleted(res, req.params.id);
+			} else {
+				dbNotFound(res, next);
+			}
+		})
+		.catch((error) => {
+			logDBError(error);
+			deleteError(res, next);
+		})
+		.then( () => connection.end());
+	} else {
+		// id validation error
+		validationError(error, res, next);
+	}
+});
+
+// DELETE instagram link
+router.delete('/:id/social/instagram', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+	const { error } = idSchema.validate({id: req.params.id});
+	if (error === undefined) {
+		const connection = createDBConnection();
+		connection.promise().query('UPDATE `Artists` SET artist_instagram = NULL WHERE artist_id = ?', [req.params.id])
+		.then(([rows, fields]) => {
+			if (rows.affectedRows != 0) {
+				resourceDeleted(res, req.params.id);
+			} else {
+				dbNotFound(res, next);
+			}
+		})
+		.catch((error) => {
+			logDBError(error);
+			deleteError(res, next);
+		})
+		.then( () => connection.end());
+	} else {
+		// id validation error
+		validationError(error, res, next);
+	}
+});
+
+// DELETE linkedin link
+router.delete('/:id/social/linkedin', isLoggedIn, isOwnerOrAdmin, (req, res, next) => {
+	const { error } = idSchema.validate({id: req.params.id});
+	if (error === undefined) {
+		const connection = createDBConnection();
+		connection.promise().query('UPDATE `Artists` SET artist_linkedin = NULL WHERE artist_id = ?', [req.params.id])
+		.then(([rows, fields]) => {
+			if (rows.affectedRows != 0) {
+				resourceDeleted(res, req.params.id);
+			} else {
+				dbNotFound(res, next);
+			}
+		})
+		.catch((error) => {
+			logDBError(error);
+			deleteError(res, next);
+		})
+		.then( () => connection.end());
+	} else {
+		// id validation error
+		validationError(error, res, next);
+	}
+});
 module.exports = router;
