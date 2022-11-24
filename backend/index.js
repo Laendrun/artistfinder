@@ -5,6 +5,7 @@ const cors = require('cors');
 const path = require('path');
 const http = require('http');
 
+const { createDBConnection } = require('./routes/lib/db.js');
 const { checkTokenSetUser } = require('./routes/middlewares/');
 
 // /API router
@@ -50,9 +51,22 @@ const io = new Server(server, {
   });
 
 io.on('connection', (socket) => {
-	console.log(socket.id);
-	socket.on('chat message', (msg) => {
-		io.emit('chat message', (msg));
+
+	socket.on('room_msg', (msg, room_name) => {
+		console.log(msg);
+		const db = createDBConnection();
+		db.promise().query('INSERT INTO `Messages` \
+		(`message_id`, `message_content`, `message_sender`, `message_room`) \
+		VALUES (NULL, ?, ?, ?)', [msg.msg, msg.sender, room_name.split(':')[1]])
+		.then( () => db.end());
+		io.to(room_name).emit('chat message', msg);
+	});
+
+	socket.on('join room', (room_name) => {
+		socket.join(room_name);
+		console.log("Socket ID: "+ socket.id +" joined room: "+room_name+".");
+		//io.to(room_name).emit('chat message', 'euhg');
+		socket.emit(room_name, `You joined '${room_name}'.`);
 	});
 });
 

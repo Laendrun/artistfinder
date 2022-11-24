@@ -8,9 +8,20 @@
   
     <div class="collapse navbar-collapse" id="mainNav">
       <RouterLink to="/artists" class="nav-link nav-router-link">Artistes</RouterLink>
-      <RouterLink to="/profile" class="nav-link nav-router-link">
-        <font-awesome-icon icon="fa-regular fa-user" />
-      </RouterLink>
+
+		<RouterLink to="/profile" class="nav-link nav-router-link d-none d-lg-block">
+			<font-awesome-icon icon="fa-regular fa-user" />
+		</RouterLink>
+		<RouterLink to="/profile" class="nav-link nav-router-link d-lg-none">
+			Profil
+		</RouterLink>
+
+		<RouterLink to="/chat" class="nav-link nav-router-link d-none d-lg-block">
+			<font-awesome-icon icon="fa-regular fa-comments" />
+		</RouterLink>
+		<RouterLink to="/chat" class="nav-link nav-router-link d-lg-none">
+			Chat
+		</RouterLink>
       <div v-if="isLoggedIn" @click="logout" id="logout-icon" class="nav-link nav-router-link">
         <font-awesome-icon icon="fa-solid fa-right-from-bracket" />
       </div>

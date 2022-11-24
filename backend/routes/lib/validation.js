@@ -3,6 +3,7 @@ const Joi = require('joi');
 const email_regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const pass_regex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\!\@\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\]).{8,64}$/;
 const website_regex = /^((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
+const date_regex = /^([0-9]{4})\-([0-9]{2})\-([0-9]){2}$/;
 
 // artist validation schema
 const artistSchema = Joi.object({
@@ -115,7 +116,7 @@ const capacitySchema = Joi.object({
 
 // date validation schema
 const dateSchema = Joi.object({
-  date: Joi.string().regex(/^([0-9]{4})\-([0-9]{2})\-([0-9]){2}$/)
+  date: Joi.string().regex(date_regex)
 });
 
 const signupSchema = Joi.object({
@@ -139,6 +140,13 @@ const changePasswordSchema = Joi.object({
   confirm_password: Joi.string().regex(pass_regex).required(),
 });
 
+const roomsSchema = Joi.object({
+	rooms_created: Joi.string().regex(date_regex).required(),
+	rooms_closed: Joi.string().regex(date_regex).optional(),
+	rooms_user_1: Joi.number().required(),
+	rooms_user_2: Joi.number().required(),
+})
+
 module.exports = {
   nameSchema,
   idSchema,
@@ -160,5 +168,6 @@ module.exports = {
   roleSchema,
   changePasswordSchema,
   websiteSchema,
-  socialSchema
+  socialSchema,
+  roomsSchema
 }

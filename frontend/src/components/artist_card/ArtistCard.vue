@@ -134,7 +134,8 @@
 			<div class="card">
 				<div class="card-title">Contact</div>
 				<div class="card-body">
-					<UserContact :artist="artist" />
+					<RouterLink to="/chat">Chat</RouterLink>
+					<!--<UserContact :artist="artist" />-->
 				</div>
 			</div>
 		</div>

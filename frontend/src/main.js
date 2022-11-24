@@ -5,7 +5,7 @@ import router from './router'
 import vue3GoogleLogin from 'vue3-google-login'
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faUser } from "@fortawesome/free-regular-svg-icons"
+import { faUser, faComments } from "@fortawesome/free-regular-svg-icons"
 import { faHeart, faRightFromBracket, faPen, faArrowUp, faArrowDown, faLink } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan, faBan, faUserTie, faUserPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faUserXmark, faUserSlash, faShuffle, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
@@ -14,7 +14,7 @@ import { faGithub, faInstagram, faFacebook, faTwitter, faLinkedin, faYoutube } f
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(faGithub, faHeart, faInstagram, faUser, faUserTie, faUserPlus, faUserXmark, faUserSlash, faRightFromBracket)
-library.add(faPen, faArrowUp, faArrowDown, faTrashCan, faBan, faCheck, faShuffle, faArrowUpRightFromSquare)
+library.add(faPen, faArrowUp, faArrowDown, faTrashCan, faBan, faCheck, faShuffle, faArrowUpRightFromSquare, faComments)
 library.add(faGithub, faInstagram, faFacebook, faTwitter, faLinkedin, faYoutube)
 
 const app = createApp(App).component("font-awesome-icon", FontAwesomeIcon);

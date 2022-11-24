@@ -22,6 +22,7 @@ async function updated() {
 }
 
 const data = await updated()
+localStorage.setItem('user_id', data.user_id)
 const role = data.role_id
 
 onMounted(() => {

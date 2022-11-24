@@ -6,6 +6,7 @@ import ProfileView from '@/views/ProfileView.vue'
 import AdminViewV2 from '@/views/AdminViewV2'
 import SignupView from '@/views/SignupView.vue'
 import ArtistCard from '@/components/artist_card/ArtistCard.vue'
+import ChatView from '@/views/ChatView.vue'
 
 const routes = [
   {
@@ -56,9 +57,25 @@ const routes = [
       if (isLoggedIn) {
         next();
       } else {
-        next({path: '/signin'})
+        next({path: '/signin'});
       }
     }
+  },
+  {
+	path: '/chat',
+	name: 'chat',
+	component: ChatView,
+	beforeEnter: (to, from, next) => {
+		let isLoggedIn = true;
+		if (localStorage.getItem('Authorization') === null) {
+			isLoggedIn = false;
+		}
+		if (isLoggedIn){
+			next();
+		} else {
+			next({path: '/signin'});
+		}
+	}
   },
   {
     path: '/admin',
