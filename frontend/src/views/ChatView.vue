@@ -1,5 +1,6 @@
 <script setup>
 	import { onMounted, ref } from 'vue'
+	import NewChatRoomModal from '@/components/chat/NewChatRoomModal.vue';
 
 	const user_id = localStorage.getItem('user_id');
 	const authHeader = `Bearer ${localStorage.getItem('Authorization')}`;
@@ -77,12 +78,12 @@
 	}
 
 	const get_messages_data = async (room_id) => {
-			const messagesData = await fetch(`https://api.artistfinder.world/api/v1/messages/rooms/${room_id}`, {
-				method: 'GET',
-				headers: {
-					'Authorization': authHeader
-				}
-			})
+		const messagesData = await fetch(`https://api.artistfinder.world/api/v1/messages/rooms/${room_id}`, {
+			method: 'GET',
+			headers: {
+				'Authorization': authHeader
+			}
+		})
 		const messagesJSON = await messagesData.json();
 		localStorage.setItem(`room:${room_id}`, JSON.stringify(messagesJSON.messages));
 	}
@@ -93,29 +94,34 @@
 		return rooms_data
 	}
 
+	const save_room = async () => {
+		const rooms_user_1 = localStorage.getItem('a');
+		const rooms_user_2 = localStorage.getItem('user_id');
+		const now = new Date();
+		let da = now.getDate();
+		da = da.toString().length == 1 ? '0' + da : da;
+		const rooms_created = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + da;
+
+		const newRoomData = await fetch(`https://api.artistfinder.world/api/v1/rooms/`,{
+			method: 'POST',
+			headers: {
+				'Authorization': authHeader,
+				"Content-type": "application/json; charset=UTF-8"
+			},
+			body: JSON.stringify({
+				rooms_user_1: rooms_user_1,
+				rooms_user_2: rooms_user_2,
+				rooms_created: rooms_created
+			})
+		});
+		console.log(await newRoomData.json())
+		window.location.reload()
+	}
+
 	const rooms = await get_rooms();
 
 	onMounted( () => {
 		document.title = 'Chat';
-/*
-		const message_form = document.getElementById('message_form');
-		const message_input = document.getElementById('message_input');
-		const room_id_span = document.getElementById('room_id');
-
-		message_form.addEventListener('submit', (e) => {
-			e.preventDefault();
-			if (message_input.value) {
-				const room_id = room_id_span.innerText;
-				const msg = {
-					msg: message_input.value,
-					sender: localStorage.getItem('user_id'),
-					room: `room:${room_id}`
-				}
-				send_in_room(msg, room_id);
-				message_input.value = '';
-			}
-		});
-		*/
 	})
 </script>
 
@@ -126,6 +132,9 @@
 			<div class="col-sm-2 myCol">
 				<!-- user li -->
 				<ul id="users">
+					<li id="li_new" data-bs-toggle="modal" data-bs-target="#new_chat_room_modal">
+						<b>+Nouveau</b>
+					</li>
 					<li v-for="room in rooms" @click="socket_join(`room:${room.rooms_id}`)">
 						{{ room.rooms_user_1 == user_id ? room.room_user_2_username : room.room_user_1_username }}
 					</li>
@@ -142,6 +151,7 @@
 				</form>
 			</div>
 		</div>
+		<NewChatRoomModal id="new_chat_room_modal" @new_room="save_room" />
 	</div>
 </template>
 
