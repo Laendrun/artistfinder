@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const saltRounds = 12;
 
 const { createDBConnection } = require('../../../lib/db.js');
-const { idSchema, changePasswordSchema, userUpdateSchema } = require('../../../lib/validation.js');
+const { idSchema, changePasswordSchema, userUpdateSchema, searchUserSchema, limitSchema } = require('../../../lib/validation.js');
 const { validationError, getError, putError, deleteError, logDBError, dbNotFound, postError } = require('../../../lib/utils.js');
 const { passwordsMustMatch, usernameExists, incorrectPassword, logBcryptError } = require('../../../lib/utils.js');
 const { resourceUpdated, resourceDeleted, resourceSoftDeleted } = require('../../../lib/utils.js');
@@ -73,6 +73,52 @@ router.get('/:id', isLoggedIn, isUser, (req, res, next) => {
     validationError(error, res, next);
   }
 });
+
+// GET usernames result limited to :limit
+router.get('/usernames/:limit/', isLoggedIn, (req, res, next) => {
+	const { error } = limitSchema.validate({limit: req.params.limit});
+	if ( error === undefined ) {
+		const sql_request = 'SELECT Users.user_username, Users.user_id FROM `Users` LIMIT '+req.params.limit+'';
+		const connection = createDBConnection();
+		connection.promise().query(sql_request)
+		.then(([rows, fields]) => {
+			res.json({
+				usernames: rows,
+				count: rows.length,
+			})
+		})
+		.catch(error => {
+			logDBError(error);
+			getError(res, next);
+		})
+		.then( connection.end() );
+	} else {
+		validationError(error, res, next);
+	}
+})
+
+// GET username where username like :username and result limited to :limit
+router.get('/:username/:limit/', isLoggedIn, (req, res, next) => {
+	const { error } = searchUserSchema.validate({username: req.params.username, limit: req.params.limit});
+	if ( error === undefined ) {
+		const sql_request = 'SELECT Users.user_username, Users.user_id FROM `Users` WHERE user_username LIKE "%'+req.params.username+'%" LIMIT '+req.params.limit+'';
+		const connection = createDBConnection();
+		connection.promise().query(sql_request)
+		.then(([rows, fields]) => {
+			res.json({
+				usernames: rows,
+				count: rows.length,
+			})
+		})
+		.catch(error => {
+			logDBError(error);
+			getError(res, next);
+		})
+		.then( connection.end() );
+	} else {
+		validationError(error, res, next);
+	}
+})
 
 // PUT Routes
 // UPDATE user WHERE user_id = :id

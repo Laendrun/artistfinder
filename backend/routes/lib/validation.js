@@ -94,6 +94,16 @@ const post_codeSchema = Joi.object({
   post_code: Joi.number().required()
 });
 
+// username validation schema
+const searchUserSchema = Joi.object({
+	username: Joi.string().min(2).max(64).required(),
+	limit: Joi.number().min(1).max(100).required(),
+});
+
+const limitSchema = Joi.object({
+	limit: Joi.number().min(1).max(100).required(),
+})
+
 // city validation schema
 const citySchema = Joi.object({
   city: Joi.string().min(5).max(50).required()
@@ -169,5 +179,7 @@ module.exports = {
   changePasswordSchema,
   websiteSchema,
   socialSchema,
+  searchUserSchema,
+  limitSchema,
   roomsSchema
 }
