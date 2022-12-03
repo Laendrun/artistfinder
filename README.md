@@ -26,4 +26,4 @@ Reach out to me on twitter or open an issue here
 
 ## License
 
-- Copyright 2022 © <a href="http://laendrun.ch" target="_blank">Laendrun</a>.
+- Copyright 2022 © <a href="https://laendrun.ch" target="_blank">Laendrun</a>.
